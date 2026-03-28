@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediSafe AI — Clinical Vision System</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;600;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --void: #03080d;
+            --deep: #071218;
+            --panel: rgba(7, 20, 28, 0.9);
+            --line: rgba(0, 210, 255, 0.08);
+            --g: #00d4ff;
+            --g2: #00ffcc;
+            --g-dim: rgba(0, 212, 255, 0.12);
+            --g-glow: 0 0 30px rgba(0, 212, 255, 0.25);
+            --amber: #ffb300;
+            --amber-dim: rgba(255, 179, 0, 0.1);
+            --red: #ff3d5a;
+            --red-dim: rgba(255, 61, 90, 0.1);
+            --green: #00e5a0;
+            --green-dim: rgba(0, 229, 160, 0.1);
+            --text: #b8dde8;
+            --muted: #3a6070;
+            --mono: 'JetBrains Mono', monospace;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--void);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* GRID BG */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(rgba(0, 212, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 212, 255, 0.04) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* SCANLINES */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0, 0, 0, 0.06) 3px, rgba(0, 0, 0, 0.06) 4px);
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* AMBIENT */
+        .amb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(80px);
+        }
+
+        .amb-1 {
+            width: 700px;
+            height: 700px;
+            top: -200px;
+            left: -150px;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.06), transparent 70%);
+            animation: ap 10s ease-in-out infinite;
+        }
+
+        .amb-2 {
+            width: 500px;
+            height: 500px;
+            bottom: -100px;
+            right: -100px;
+            background: radial-gradient(circle, rgba(0, 229, 160, 0.05), transparent 70%);
+            animation: ap 13s 4s ease-in-out infinite reverse;
+        }
+
+        @keyframes ap {
+
+            0%,
+            100% {
+                opacity: .6;
+                transform: scale(1)
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.08)
+            }
+        }
+
+        /* ─── SHELL ─── */
+        .shell {
+            position: relative;
+            z-index: 1;
+            max-width: 1380px;
+            margin: 0 auto;
+            padding: 0 24px 60px;
+        }
+
+        /* ─── TOP BAR ─── */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 0 0 0;
+            height: 64px;
+            margin-bottom: 36px;
+            border-bottom: 1px solid var(--line);
+            position: relative;
+        }
+
+        .topbar::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, var(--g), transparent);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-hex {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 229, 160, 0.1));
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--g-glow);
+        }
+
+        .logo-hex::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 40%, rgba(0, 212, 255, 0.1));
+        }
+
+        .logo-hex i {
+            color: var(--g);
+            font-size: 18px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-name {
+            font-family: var(--mono);
+            font-size: 1.1rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--g), var(--g2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.06em;
+        }
+
+        .logo-sub {
+            font-size: 0.68rem;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-family: var(--mono);
+            margin-top: 2px;
+        }
+
+        .sys-status {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--muted);
+            letter-spacing: 0.06em;
+        }
+
+        .pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 8px var(--green);
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1)
+            }
+
+            50% {
+                opacity: .5;
+                transform: scale(0.8)
+            }
+        }
+
+        .api-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            border-radius: 6px;
+            padding: 6px 12px;
+        }
+
+        .api-pill input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            width: 180px;
+        }
+
+        .api-pill input::placeholder {
+            color: var(--muted);
+        }
+
+        .api-pill i {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* ─── MAIN GRID ─── */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        @media(max-width:900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ─── PANEL ─── */
+        .panel {
+            background: var(--panel);
+            border: 1px solid rgba(0, 212, 255, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(20px);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--g), transparent);
+            opacity: 0.4;
+        }
+
+        .panel-head {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-head-label {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .panel-icon-box {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .pib-cyan {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--g);
+        }
+
+        .pib-green {
+            background: rgba(0, 229, 160, 0.1);
+            color: var(--green);
+        }
+
+        .panel-body {
+            padding: 20px;
+        }
+
+        /* ─── CORNER ACCENTS ─── */
+        .panel-corner {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-color: rgba(0, 212, 255, 0.3);
+            border-style: solid;
+        }
+
+        .pc-tl {
+            top: 6px;
+            left: 6px;
+            border-width: 1px 0 0 1px;
+        }
+
+        .pc-tr {
+            top: 6px;
+            right: 6px;
+            border-width: 1px 1px 0 0;
+        }
+
+        .pc-bl {
+            bottom: 6px;
+            left: 6px;
+            border-width: 0 0 1px 1px;
+        }
+
+        .pc-br {
+            bottom: 6px;
+            right: 6px;
+            border-width: 0 1px 1px 0;
+        }
+
+        /* ─── UPLOAD ZONE ─── */
+        .upload-zone {
+            border: 2px dashed rgba(0, 212, 255, 0.15);
+            border-radius: 10px;
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            background: rgba(0, 212, 255, 0.02);
+            margin-bottom: 16px;
+        }
+
+        .upload-zone:hover,
+        .upload-zone.dragover {
+            border-color: var(--g);
+            background: rgba(0, 212, 255, 0.05);
+            box-shadow: var(--g-glow), inset 0 0 30px rgba(0, 212, 255, 0.03);
+        }
+
+        .upload-zone input[type=file] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+
+        .uz-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 229, 160, 0.06));
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: var(--g);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .upload-zone:hover .uz-icon {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .uz-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+            text-align: center;
+        }
+
+        .uz-sub {
+            font-size: 0.78rem;
+            color: var(--muted);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .uz-formats {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .fmt {
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            color: var(--g);
+            background: rgba(0, 212, 255, 0.06);
+        }
+
+        /* ─── PREVIEW ─── */
+        .preview-wrap {
+            display: none;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .preview-wrap.show {
+            display: block;
+            animation: imgIn 0.4s ease;
+        }
+
+        @keyframes imgIn {
+            from {
+                opacity: 0;
+                transform: scale(0.97)
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1)
+            }
+        }
+
+        .preview-wrap img {
+            width: 100%;
+            max-height: 220px;
+            object-fit: contain;
+            display: block;
+            background: #020c10;
+        }
+
+        .preview-bar {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: flex;
+            gap: 6px;
+        }
+
+        .preview-tag {
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            font-weight: 700;
+            background: rgba(3, 8, 13, 0.85);
+            border: 1px solid rgba(0, 212, 255, 0.25);
+            border-radius: 4px;
+            padding: 3px 8px;
+            color: var(--g);
+            backdrop-filter: blur(8px);
+        }
+
+        .clear-btn {
+            font-size: 0.65rem;
+            font-weight: 700;
+            background: rgba(255, 61, 90, 0.15);
+            border: 1px solid rgba(255, 61, 90, 0.3);
+            border-radius: 4px;
+            padding: 3px 8px;
+            color: var(--red);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--mono);
+        }
+
+        .clear-btn:hover {
+            background: rgba(255, 61, 90, 0.28);
+        }
+
+        /* ─── SCAN BUTTON ─── */
+        .scan-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 229, 160, 0.1));
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            color: var(--g);
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--g-glow);
+        }
+
+        .scan-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.15), transparent);
+            transition: left 0.5s;
+        }
+
+        .scan-btn:hover:not(:disabled)::before {
+            left: 100%;
+        }
+
+        .scan-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(0, 229, 160, 0.15));
+            transform: translateY(-1px);
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.3);
+        }
+
+        .scan-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .scan-spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0, 212, 255, 0.2);
+            border-top-color: var(--g);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        /* ─── RESULTS PANEL RIGHT ─── */
+        .results-area {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            border: 2px dashed rgba(0, 212, 255, 0.08);
+            border-radius: 12px;
+            padding: 60px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            background: rgba(0, 212, 255, 0.01);
+            animation: fadeUp 0.5s ease;
+        }
+
+        .empty-icon {
+            width: 72px;
+            height: 72px;
+            background: rgba(0, 212, 255, 0.06);
+            border: 1px solid rgba(0, 212, 255, 0.12);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--muted);
+        }
+
+        .empty-state h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--muted);
+            font-family: var(--mono);
+        }
+
+        .empty-state p {
+            font-size: 0.85rem;
+            color: var(--muted);
+            opacity: 0.6;
+            text-align: center;
+            max-width: 320px;
+            line-height: 1.6;
+        }
+
+        /* URGENCY BANNER */
+        .urgency-banner {
+            padding: 20px 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+            border: 1px solid;
+            position: relative;
+            overflow: hidden;
+            animation: fadeUp 0.4s ease;
+        }
+
+        .urgency-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: currentColor;
+            opacity: 0.4;
+        }
+
+        .ub-CRITICAL {
+            background: var(--red-dim);
+            border-color: rgba(255, 61, 90, 0.25);
+            color: var(--red);
+        }
+
+        .ub-WARNING {
+            background: var(--amber-dim);
+            border-color: rgba(255, 179, 0, 0.25);
+            color: var(--amber);
+        }
+
+        .ub-SAFE {
+            background: var(--green-dim);
+            border-color: rgba(0, 229, 160, 0.25);
+            color: var(--green);
+        }
+
+        .ub-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ub-content {
+            flex: 1;
+        }
+
+        .ub-level {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ub-level::before {
+            content: '';
+            width: 20px;
+            height: 1px;
+            background: currentColor;
+            opacity: 0.5;
+        }
+
+        .ub-reason {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text);
+        }
+
+        /* RESULT SECTION CARDS */
+        .rsec {
+            border-radius: 12px;
+            border: 1px solid rgba(0, 212, 255, 0.1);
+            overflow: hidden;
+            animation: fadeUp 0.4s ease;
+        }
+
+        .rsec-head {
+            padding: 13px 20px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.07);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 212, 255, 0.03);
+        }
+
+        .rsec-title {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .rsec-body {
+            padding: 16px 20px;
+        }
+
+        /* MEDS */
+        .med-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .med-tag {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            background: rgba(0, 212, 255, 0.07);
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text);
+            transition: all 0.2s;
+        }
+
+        .med-tag:hover {
+            background: rgba(0, 212, 255, 0.12);
+            border-color: rgba(0, 212, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .med-tag i {
+            color: var(--g);
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
+        /* INTERACTIONS */
+        .icard {
+            border-left: 3px solid var(--red);
+            background: var(--red-dim);
+            border-radius: 0 8px 8px 0;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            border-top: 1px solid rgba(255, 61, 90, 0.15);
+            border-right: 1px solid rgba(255, 61, 90, 0.15);
+            border-bottom: 1px solid rgba(255, 61, 90, 0.15);
+            transition: transform 0.2s;
+        }
+
+        .icard:last-child {
+            margin-bottom: 0;
+        }
+
+        .icard:hover {
+            transform: translateX(4px);
+        }
+
+        .icard-drugs {
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #ff8899;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .icard-risk {
+            font-size: 0.88rem;
+            color: #ffb3bc;
+            line-height: 1.5;
+        }
+
+        /* ACTIONS */
+        .acard {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            border-left: 3px solid var(--green);
+            background: var(--green-dim);
+            border-radius: 0 8px 8px 0;
+            padding: 13px 16px;
+            margin-bottom: 10px;
+            border-top: 1px solid rgba(0, 229, 160, 0.15);
+            border-right: 1px solid rgba(0, 229, 160, 0.15);
+            border-bottom: 1px solid rgba(0, 229, 160, 0.15);
+            transition: transform 0.2s;
+        }
+
+        .acard:last-child {
+            margin-bottom: 0;
+        }
+
+        .acard:hover {
+            transform: translateX(4px);
+        }
+
+        .acard-num {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--green);
+            padding-top: 2px;
+            flex-shrink: 0;
+            min-width: 24px;
+        }
+
+        .acard p {
+            font-size: 0.88rem;
+            color: #a7f3d0;
+            line-height: 1.6;
+        }
+
+        /* DOCTOR NOTE */
+        .dnote {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 20px 20px 20px 28px;
+            font-style: italic;
+            color: #8ca8b0;
+            line-height: 1.8;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .dnote::before {
+            content: '❝';
+            position: absolute;
+            top: 12px;
+            left: 10px;
+            font-size: 1.4rem;
+            color: rgba(0, 212, 255, 0.15);
+            font-style: normal;
+        }
+
+        /* SCAN OVERLAY (loading state) */
+        .scan-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(3, 8, 13, 0.92);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .scan-overlay.show {
+            display: flex;
+        }
+
+        .scan-frame {
+            width: 200px;
+            height: 200px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scan-frame::before,
+        .scan-frame::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-color: var(--g);
+            border-style: solid;
+        }
+
+        .scan-frame::before {
+            top: -1px;
+            left: -1px;
+            border-width: 2px 0 0 2px;
+        }
+
+        .scan-frame::after {
+            bottom: -1px;
+            right: -1px;
+            border-width: 0 2px 2px 0;
+        }
+
+        .scan-line-anim {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--g), transparent);
+            box-shadow: 0 0 12px var(--g);
+            animation: scanline 1.5s ease-in-out infinite;
+        }
+
+        @keyframes scanline {
+            0% {
+                top: 0;
+                opacity: 1
+            }
+
+            90% {
+                top: 100%;
+                opacity: 0.3
+            }
+
+            100% {
+                top: 100%;
+                opacity: 0
+            }
+        }
+
+        .scan-icon {
+            font-size: 3rem;
+            color: rgba(0, 212, 255, 0.2);
+        }
+
+        .scan-text {
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            letter-spacing: 0.12em;
+            color: var(--g);
+            text-transform: uppercase;
+            animation: blink 1.2s ease infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 0.4
+            }
+
+            50% {
+                opacity: 1
+            }
+        }
+
+        .scan-sub {
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            color: var(--muted);
+            letter-spacing: 0.08em;
+        }
+
+        /* ANIM */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="amb amb-1"></div>
+    <div class="amb amb-2"></div>
+
+    <!-- SCAN OVERLAY -->
+    <div class="scan-overlay" id="scanOverlay">
+        <div class="scan-frame">
+            <div class="scan-line-anim"></div>
+            <i class="fa-solid fa-prescription-bottle-medical scan-icon"></i>
+        </div>
+        <div class="scan-text">Scanning image…</div>
+        <div class="scan-sub">Running clinical pharmacist analysis</div>
+    </div>
+
+    <div class="shell">
+
+        <!-- TOP BAR -->
+        <div class="topbar">
+            <div class="logo-area">
+                <div class="logo-hex"><i class="fa-solid fa-prescription-bottle-medical"></i></div>
+                <div>
+                    <div class="logo-name">MEDISAFE_AI</div>
+                    <div class="logo-sub">Clinical Vision System v2.4</div>
+                </div>
+            </div>
+            <div class="sys-status">
+                <div class="status-pill">
+                    <div class="pulse-dot"></div>SYSTEM ONLINE
+                </div>
+                <div class="api-pill">
+                    <i class="fa-solid fa-key"></i>
+                    <input type="password" id="apiKey" placeholder="Gemini API key…" autocomplete="off">
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN GRID -->
+        <div class="main-grid">
+
+            <!-- LEFT: INPUT -->
+            <div>
+                <div class="panel" style="margin-bottom:16px">
+                    <div class="pc-tl panel-corner"></div>
+                    <div class="pc-tr panel-corner"></div>
+                    <div class="pc-bl panel-corner"></div>
+                    <div class="pc-br panel-corner"></div>
+                    <div class="panel-head">
+                        <div class="panel-icon-box pib-cyan"><i class="fa-solid fa-camera"></i></div>
+                        <span class="panel-head-label">Image Input</span>
+                    </div>
+                    <div class="panel-body">
+
+                        <!-- UPLOAD ZONE -->
+                        <div class="upload-zone" id="uploadZone">
+                            <input type="file" id="fileInput" accept="image/*" onchange="handleFile(event)">
+                            <div class="uz-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                            <div class="uz-title">Drop prescription or bottles</div>
+                            <div class="uz-sub">Drag & drop or click to browse<br>Prescriptions · Pill bottles · Lab
+                                docs</div>
+                            <div class="uz-formats">
+                                <span class="fmt">JPG</span><span class="fmt">PNG</span><span
+                                    class="fmt">WEBP</span><span class="fmt">GIF</span>
+                            </div>
+                        </div>
+
+                        <!-- PREVIEW -->
+                        <div class="preview-wrap" id="previewWrap">
+                            <img id="previewImg" src="" alt="preview">
+                            <div class="preview-bar">
+                                <span class="preview-tag" id="previewTag">IMAGE</span>
+                                <span class="clear-btn" onclick="clearImg()">✕ Clear</span>
+                            </div>
+                        </div>
+
+                        <!-- SCAN BUTTON -->
+                        <button class="scan-btn" id="scanBtn" disabled onclick="runAnalysis()">
+                            <i class="fa-solid fa-microscope" id="btnIcon"></i>
+                            <span id="btnLabel">INITIATE SCAN</span>
+                            <div class="scan-spinner" id="scanSpinner"></div>
+                        </button>
+
+                    </div>
+                </div>
+
+                <!-- INFO PANEL -->
+                <div class="panel">
+                    <div class="panel-head">
+                        <div class="panel-icon-box pib-green"><i class="fa-solid fa-circle-info"></i></div>
+                        <span class="panel-head-label">Capabilities</span>
+                    </div>
+                    <div class="panel-body">
+                        <div style="display:flex;flex-direction:column;gap:10px">
+                            <div style="display:flex;align-items:center;gap:10px;font-size:0.83rem;color:var(--muted)">
+                                <i class="fa-solid fa-check"
+                                    style="color:var(--green);font-size:10px;flex-shrink:0"></i>
+                                Drug interaction detection
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px;font-size:0.83rem;color:var(--muted)">
+                                <i class="fa-solid fa-check"
+                                    style="color:var(--green);font-size:10px;flex-shrink:0"></i>
+                                Dosage risk analysis
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px;font-size:0.83rem;color:var(--muted)">
+                                <i class="fa-solid fa-check"
+                                    style="color:var(--green);font-size:10px;flex-shrink:0"></i>
+                                Contraindication flagging
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px;font-size:0.83rem;color:var(--muted)">
+                                <i class="fa-solid fa-check"
+                                    style="color:var(--green);font-size:10px;flex-shrink:0"></i>
+                                Clinical action recommendations
+                            </div>
+                            <div
+                                style="margin-top:6px;padding:10px;background:rgba(255,179,0,0.06);border:1px solid rgba(255,179,0,0.15);border-radius:6px;font-size:0.75rem;color:rgba(255,179,0,0.7);line-height:1.5">
+                                <i class="fa-solid fa-triangle-exclamation" style="margin-right:5px"></i>
+                                Not a substitute for professional medical advice.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: RESULTS -->
+            <div class="results-area">
+
+                <!-- EMPTY STATE -->
+                <div class="empty-state" id="emptyState">
+                    <div class="empty-icon"><i class="fa-solid fa-laptop-medical"></i></div>
+                    <h3>AWAITING_SCAN</h3>
+                    <p>Upload a prescription or medication image to begin clinical safety analysis</p>
+                </div>
+
+                <!-- RESULTS (hidden initially) -->
+                <div id="resultBlock" class="hidden">
+
+                    <div id="urgencyWrap" style="margin-bottom:4px"></div>
+
+                    <div class="rsec" id="medsSection">
+                        <div class="rsec-head">
+                            <div class="panel-icon-box pib-cyan" style="width:24px;height:24px;font-size:11px"><i
+                                    class="fa-solid fa-capsules"></i></div>
+                            <span class="rsec-title">Detected Medications</span>
+                        </div>
+                        <div class="rsec-body">
+                            <div class="med-grid" id="medsList"></div>
+                        </div>
+                    </div>
+
+                    <div class="rsec hidden" id="interactionsSection" style="border-color:rgba(255,61,90,0.15)">
+                        <div class="rsec-head" style="background:rgba(255,61,90,0.05);border-color:rgba(255,61,90,0.1)">
+                            <div class="panel-icon-box"
+                                style="background:rgba(255,61,90,0.1);color:var(--red);width:24px;height:24px;font-size:11px">
+                                <i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <span class="rsec-title" style="color:#ff8899">Drug Interactions</span>
+                        </div>
+                        <div class="rsec-body" id="interactionsList"></div>
+                    </div>
+
+                    <div class="rsec hidden" id="actionsSection" style="border-color:rgba(0,229,160,0.12)">
+                        <div class="rsec-head" style="background:rgba(0,229,160,0.04);border-color:rgba(0,229,160,0.1)">
+                            <div class="panel-icon-box"
+                                style="background:rgba(0,229,160,0.1);color:var(--green);width:24px;height:24px;font-size:11px">
+                                <i class="fa-solid fa-clipboard-check"></i></div>
+                            <span class="rsec-title" style="color:#6ee7b7">Recommended Actions</span>
+                        </div>
+                        <div class="rsec-body" id="actionsList"></div>
+                    </div>
+
+                    <div class="rsec hidden" id="noteSection">
+                        <div class="rsec-head">
+                            <div class="panel-icon-box"
+                                style="background:rgba(56,200,255,0.1);color:var(--blue);width:24px;height:24px;font-size:11px">
+                                <i class="fa-solid fa-user-doctor"></i></div>
+                            <span class="rsec-title">Pharmacist Note</span>
+                        </div>
+                        <div class="rsec-body">
+                            <div class="dnote" id="noteText"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let b64 = null, mime = null;
+
+        // Drag & drop
+        const zone = document.getElementById('uploadZone');
+        zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover') });
+        zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+        zone.addEventListener('drop', e => {
+            e.preventDefault(); zone.classList.remove('dragover');
+            const f = e.dataTransfer.files[0];
+            if (f && f.type.startsWith('image/')) loadFile(f);
+        });
+
+        function handleFile(e) { const f = e.target.files[0]; if (f) loadFile(f); }
+
+        function loadFile(file) {
+            mime = file.type;
+            const r = new FileReader();
+            r.onload = e => {
+                b64 = e.target.result.split(',')[1];
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('previewTag').textContent = file.type.split('/')[1].toUpperCase();
+                document.getElementById('uploadZone').style.display = 'none';
+                document.getElementById('previewWrap').classList.add('show');
+                validate();
+            };
+            r.readAsDataURL(file);
+        }
+
+        function clearImg() {
+            b64 = null; mime = null;
+            document.getElementById('previewImg').src = '';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('previewWrap').classList.remove('show');
+            document.getElementById('uploadZone').style.display = 'flex';
+            validate();
+        }
+
+        function validate() {
+            const key = document.getElementById('apiKey').value.trim();
+            document.getElementById('scanBtn').disabled = !(key && b64);
+        }
+
+        document.getElementById('apiKey').addEventListener('input', validate);
+
+        async function runAnalysis() {
+            const key = document.getElementById('apiKey').value.trim();
+            if (!key || !b64) return;
+
+            // Show overlay
+            document.getElementById('scanOverlay').classList.add('show');
+            document.getElementById('scanBtn').disabled = true;
+            document.getElementById('btnIcon').style.display = 'none';
+            document.getElementById('btnLabel').textContent = 'SCANNING…';
+            document.getElementById('scanSpinner').style.display = 'block';
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('resultBlock').classList.add('hidden');
+
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        systemInstruction: { parts: [{ text: 'You are a clinical pharmacist AI. Analyze medication images and detect drug interactions. Return JSON ONLY (no markdown) with: urgency (CRITICAL/WARNING/SAFE), urgency_reason, medications[], interactions[{drugs,risk}], actions[], doctor_note' }] },
+                        contents: [{ parts: [{ inlineData: { mimeType: mime, data: b64 } }] }],
+                        generationConfig: { responseMimeType: 'application/json', temperature: 0.1 }
+                    })
+                });
+                const data = await res.json();
+                if (data.error) throw new Error(data.error.message);
+                const text = data.candidates[0].content.parts[0].text;
+                render(JSON.parse(text));
+            } catch (e) {
+                document.getElementById('emptyState').classList.remove('hidden');
+                document.getElementById('emptyState').innerHTML = `<div class="empty-icon"><i class="fa-solid fa-circle-xmark" style="color:var(--red)"></i></div><h3 style="color:var(--red)">ERROR</h3><p style="color:rgba(255,100,120,0.7)">${e.message}</p>`;
+            } finally {
+                document.getElementById('scanOverlay').classList.remove('show');
+                document.getElementById('scanBtn').disabled = false;
+                document.getElementById('btnIcon').style.display = 'inline';
+                document.getElementById('btnLabel').textContent = 'INITIATE SCAN';
+                document.getElementById('scanSpinner').style.display = 'none';
+                validate();
+            }
+        }
+
+        function render(d) {
+            const urgency = (d.urgency || 'SAFE').toUpperCase();
+            const icons = { CRITICAL: 'fa-triangle-exclamation', WARNING: 'fa-circle-exclamation', SAFE: 'fa-shield-halved' };
+
+            // Urgency
+            document.getElementById('urgencyWrap').innerHTML = `
+    <div class="urgency-banner ub-${urgency}" style="margin-bottom:16px">
+      <div class="ub-icon-box"><i class="fa-solid ${icons[urgency] || icons.SAFE}"></i></div>
+      <div class="ub-content">
+        <div class="ub-level">${urgency}</div>
+        <div class="ub-reason">${d.urgency_reason || 'No critical concerns found.'}</div>
+      </div>
+    </div>`;
+
+            // Meds
+            const ml = document.getElementById('medsList');
+            ml.innerHTML = '';
+            (d.medications || []).forEach(m => {
+                ml.innerHTML += `<div class="med-tag"><i class="fa-solid fa-pills"></i>${m}</div>`;
+            });
+            if (!ml.innerHTML) ml.innerHTML = '<span style="color:var(--muted);font-size:0.85rem">No medications identified.</span>';
+
+            // Interactions
+            const il = document.getElementById('interactionsList');
+            il.innerHTML = '';
+            if (d.interactions && d.interactions.length) {
+                document.getElementById('interactionsSection').classList.remove('hidden');
+                d.interactions.forEach(i => {
+                    il.innerHTML += `<div class="icard"><div class="icard-drugs"><i class="fa-solid fa-bolt"></i>${i.drugs || 'Interaction'}</div><div class="icard-risk">${i.risk || ''}</div></div>`;
+                });
+            } else {
+                document.getElementById('interactionsSection').classList.add('hidden');
+            }
+
+            // Actions
+            const al = document.getElementById('actionsList');
+            al.innerHTML = '';
+            if (d.actions && d.actions.length) {
+                document.getElementById('actionsSection').classList.remove('hidden');
+                d.actions.forEach((a, i) => {
+                    al.innerHTML += `<div class="acard"><div class="acard-num">${String(i + 1).padStart(2, '0')}</div><p>${a}</p></div>`;
+                });
+            } else {
+                document.getElementById('actionsSection').classList.add('hidden');
+            }
+
+            // Note
+            if (d.doctor_note) {
+                document.getElementById('noteSection').classList.remove('hidden');
+                document.getElementById('noteText').innerHTML = d.doctor_note.replace(/\n/g, '<br>');
+            } else {
+                document.getElementById('noteSection').classList.add('hidden');
+            }
+
+            document.getElementById('resultBlock').classList.remove('hidden');
+        }
+    </script>
+</body>
+
+</html>
