@@ -4,32 +4,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediSafe AI — Clinical Vision System</title>
+    <title>MediSafe AI — Advanced Clinical UI</title>
+    <!-- Premium Web Fonts -->
     <link
-        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;600;700;900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Outfit:wght@200;300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
+        /* ─── COLOR TOKENS ─── */
         :root {
-            --void: #03080d;
-            --deep: #071218;
-            --panel: rgba(7, 20, 28, 0.9);
-            --line: rgba(0, 210, 255, 0.08);
-            --g: #00d4ff;
+            /* Abyss Core */
+            --void: #010409;
+            --deep: #060c13;
+            --surface: rgba(10, 18, 28, 0.4);
+            /* High Glass Transparency */
+            --surface-hover: rgba(18, 28, 42, 0.5);
+
+            /* Structural Lines */
+            --line-subtle: rgba(0, 212, 255, 0.08);
+            --line-bright: rgba(0, 212, 255, 0.25);
+
+            /* Cyber Cyan */
+            --g: #00e1ff;
+            /* Brighter Cyan */
             --g2: #00ffcc;
-            --g-dim: rgba(0, 212, 255, 0.12);
-            --g-glow: 0 0 30px rgba(0, 212, 255, 0.25);
-            --amber: #ffb300;
-            --amber-dim: rgba(255, 179, 0, 0.1);
-            --red: #ff3d5a;
-            --red-dim: rgba(255, 61, 90, 0.1);
-            --green: #00e5a0;
-            --green-dim: rgba(0, 229, 160, 0.1);
-            --text: #b8dde8;
-            --muted: #3a6070;
+            /* Neon Teal */
+            --g-dim: rgba(0, 225, 255, 0.12);
+            --g-glow: 0 0 40px rgba(0, 212, 255, 0.3), inset 0 0 20px rgba(0, 212, 255, 0.1);
+
+            /* Status Colors (Highly Saturated for Dark Mode) */
+            --amber: #ffaa00;
+            --amber-glow: 0 0 20px rgba(255, 170, 0, 0.3);
+            --red: #ff3355;
+            --red-glow: 0 0 30px rgba(255, 51, 85, 0.4);
+            --green: #00f2ad;
+            --green-glow: 0 0 25px rgba(0, 242, 173, 0.25);
+
+            /* Typography Options */
+            --text-main: #d0e7f2;
+            --text-muted: #577d8c;
             --mono: 'JetBrains Mono', monospace;
+            --sans: 'Outfit', sans-serif;
         }
 
+        /* ─── GLOBAL RESET ─── */
         *,
         *::before,
         *::after {
@@ -39,360 +58,428 @@
         }
 
         body {
-            font-family: 'Outfit', sans-serif;
+            font-family: var(--sans);
             background: var(--void);
-            color: var(--text);
+            color: var(--text-main);
             min-height: 100vh;
             overflow-x: hidden;
+            letter-spacing: 0.02em;
         }
 
-        /* GRID BG */
+        /* ─── IMMERSIVE BACKGROUND EFFECTS ─── */
+        /* Deep Grid */
         body::after {
             content: '';
             position: fixed;
             inset: 0;
-            background-image: linear-gradient(rgba(0, 212, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 212, 255, 0.04) 1px, transparent 1px);
-            background-size: 50px 50px;
+            background-image:
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
             pointer-events: none;
-            z-index: 0;
+            z-index: -2;
+            mask-image: radial-gradient(circle at center, black, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle at center, black, transparent 80%);
         }
 
-        /* SCANLINES */
+        /* Sub-pixel Scanlines (CRT feel) */
         body::before {
             content: '';
             position: fixed;
             inset: 0;
-            background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0, 0, 0, 0.06) 3px, rgba(0, 0, 0, 0.06) 4px);
+            background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0, 0, 0, 0.08) 3px, rgba(0, 0, 0, 0.08) 4px);
             pointer-events: none;
             z-index: 9999;
+            opacity: 0.6;
         }
 
-        /* AMBIENT */
-        .amb {
+        /* Dynamic Glowing Orbs (Ambient Lighting) */
+        .ambient-orb {
             position: fixed;
             border-radius: 50%;
             pointer-events: none;
-            z-index: 0;
-            filter: blur(80px);
+            z-index: -1;
+            filter: blur(100px);
+            opacity: 0.5;
+            mix-blend-mode: screen;
         }
 
-        .amb-1 {
-            width: 700px;
-            height: 700px;
+        .orb-1 {
+            width: 800px;
+            height: 800px;
             top: -200px;
-            left: -150px;
-            background: radial-gradient(circle, rgba(0, 212, 255, 0.06), transparent 70%);
-            animation: ap 10s ease-in-out infinite;
+            left: -200px;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.15), transparent 70%);
+            animation: drift 15s ease-in-out infinite alternate;
         }
 
-        .amb-2 {
-            width: 500px;
-            height: 500px;
+        .orb-2 {
+            width: 600px;
+            height: 600px;
             bottom: -100px;
-            right: -100px;
-            background: radial-gradient(circle, rgba(0, 229, 160, 0.05), transparent 70%);
-            animation: ap 13s 4s ease-in-out infinite reverse;
+            right: -150px;
+            background: radial-gradient(circle, rgba(0, 255, 204, 0.1), transparent 70%);
+            animation: drift 18s ease-in-out infinite alternate-reverse;
         }
 
-        @keyframes ap {
+        @keyframes drift {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
 
-            0%,
             100% {
-                opacity: .6;
-                transform: scale(1)
-            }
-
-            50% {
-                opacity: 1;
-                transform: scale(1.08)
+                transform: translate(50px, 50px) scale(1.1);
             }
         }
 
-        /* ─── SHELL ─── */
+        /* ─── SHELL STRUCTURE ─── */
         .shell {
             position: relative;
-            z-index: 1;
-            max-width: 1380px;
+            z-index: 50;
+            max-width: 1550px;
             margin: 0 auto;
-            padding: 0 24px 60px;
+            padding: 0 30px 60px;
         }
 
-        /* ─── TOP BAR ─── */
+        /* ─── BIOMETRICS TAB CSS ─── */
+        .bio-zone { display:none; flex-direction:column; gap:12px; margin-bottom:20px; position:relative; }
+        .bio-wrapper { position:relative; border-radius:12px; overflow:hidden; border:2px solid var(--amber); background:#000; min-height: 240px; display:flex; align-items:center; justify-content:center; box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 0 20px rgba(255,170,0,0.2); }
+        #bioFeed { width:100%; height:auto; display:none; transform: scaleX(-1); } /* Mirror face */
+        .bio-target { position:absolute; inset:0; pointer-events:none; border: 2px dashed rgba(255,170,0,0.6); margin:50px auto; width:100px; height:100px; border-radius:10px; animation: targetPulse 1s infinite alternate; }
+        @keyframes targetPulse { from { border-color:rgba(255,170,0,0.4); transform:scale(0.98); } to { border-color:rgba(255,170,0,0.9); transform:scale(1.02); } }
+        .bio-graph-canvas { width:100%; height:80px; background:rgba(0,0,0,0.5); border-radius:8px; border:1px solid var(--line-bright); margin-top:8px; }
+        .bio-bpm { position:absolute; bottom:10px; left:20px; font-family:var(--mono); font-size:2rem; font-weight:800; color:var(--amber); text-shadow:0 0 10px var(--amber); }
+
+        /* ─── TOP NAVIGATION HEAD ─── */
         .topbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 0 0 0;
-            height: 64px;
-            margin-bottom: 36px;
-            border-bottom: 1px solid var(--line);
+            height: 80px;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--line-subtle);
             position: relative;
         }
 
+        /* Topbar glowing rim light */
         .topbar::after {
             content: '';
             position: absolute;
             bottom: -1px;
             left: 0;
-            width: 200px;
+            width: 300px;
             height: 1px;
             background: linear-gradient(90deg, var(--g), transparent);
+            box-shadow: 0 0 10px var(--g);
         }
 
         .logo-area {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 18px;
         }
 
         .logo-hex {
-            width: 42px;
-            height: 42px;
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 229, 160, 0.1));
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            border-radius: 8px;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 229, 160, 0.1));
+            border: 1px solid var(--line-bright);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow: hidden;
             box-shadow: var(--g-glow);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .logo-hex:hover {
+            transform: scale(1.1) rotate(5deg);
         }
 
         .logo-hex::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, transparent 40%, rgba(0, 212, 255, 0.1));
+            background: linear-gradient(135deg, transparent 40%, rgba(0, 212, 255, 0.2));
         }
 
         .logo-hex i {
-            color: var(--g);
-            font-size: 18px;
+            color: #fff;
+            font-size: 22px;
             position: relative;
             z-index: 1;
+            filter: drop-shadow(0 0 5px var(--g));
         }
 
         .logo-name {
             font-family: var(--mono);
-            font-size: 1.1rem;
-            font-weight: 700;
-            background: linear-gradient(90deg, var(--g), var(--g2));
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #ffffff, var(--g));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 0.06em;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
         }
 
         .logo-sub {
-            font-size: 0.68rem;
-            color: var(--muted);
-            letter-spacing: 0.1em;
+            font-size: 0.7rem;
+            color: var(--g);
+            letter-spacing: 0.15em;
             text-transform: uppercase;
             font-family: var(--mono);
             margin-top: 2px;
+            opacity: 0.8;
+            font-weight: 600;
         }
 
+        /* Controls */
         .sys-status {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 24px;
         }
 
-        .status-pill {
+        .audio-toggle {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             font-family: var(--mono);
-            font-size: 0.72rem;
-            color: var(--muted);
-            letter-spacing: 0.06em;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid var(--line-subtle);
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
         }
 
-        .pulse-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--green);
-            box-shadow: 0 0 8px var(--green);
-            animation: pulse 2s ease infinite;
+        .audio-toggle:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
         }
 
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1)
-            }
-
-            50% {
-                opacity: .5;
-                transform: scale(0.8)
-            }
+        .audio-toggle.active {
+            background: var(--green-dim);
+            color: var(--green);
+            border-color: rgba(0, 242, 173, 0.3);
+            box-shadow: var(--green-glow);
         }
 
         .api-pill {
             display: flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(0, 212, 255, 0.05);
-            border: 1px solid rgba(0, 212, 255, 0.15);
-            border-radius: 6px;
-            padding: 6px 12px;
+            gap: 10px;
+            background: rgba(0, 212, 255, 0.04);
+            border: 1px solid var(--line-bright);
+            border-radius: 8px;
+            padding: 8px 16px;
+            backdrop-filter: blur(10px);
+            box-shadow: inset 0 0 10px rgba(0, 212, 255, 0.05);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .api-pill:focus-within {
+            border-color: var(--g);
+            box-shadow: var(--g-glow);
         }
 
         .api-pill input {
             background: transparent;
             border: none;
             outline: none;
-            color: var(--text);
+            color: #fff;
             font-family: var(--mono);
-            font-size: 0.78rem;
-            width: 180px;
+            font-size: 0.8rem;
+            width: 190px;
         }
 
         .api-pill input::placeholder {
-            color: var(--muted);
+            color: var(--text-muted);
         }
 
         .api-pill i {
-            color: var(--muted);
-            font-size: 12px;
+            color: var(--g);
+            font-size: 14px;
         }
 
-        /* ─── MAIN GRID ─── */
+        /* ─── 3-COLUMN LAYOUT ─── */
         .main-grid {
             display: grid;
-            grid-template-columns: 360px 1fr;
-            gap: 20px;
+            grid-template-columns: 380px 420px 1fr;
+            gap: 28px;
             align-items: start;
         }
 
-        @media(max-width:900px) {
+        @media(max-width:1200px) {
+            .main-grid {
+                grid-template-columns: 380px 1fr;
+            }
+        }
+
+        @media(max-width:850px) {
             .main-grid {
                 grid-template-columns: 1fr;
             }
         }
 
-        /* ─── PANEL ─── */
+        /* ─── GLASSMORPHISM PANELS ─── */
         .panel {
-            background: var(--panel);
-            border: 1px solid rgba(0, 212, 255, 0.1);
-            border-radius: 12px;
-            backdrop-filter: blur(20px);
-            overflow: hidden;
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            backdrop-filter: blur(35px) saturate(130%);
+            -webkit-backdrop-filter: blur(35px) saturate(130%);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
             position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
         }
 
-        .panel::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--g), transparent);
-            opacity: 0.4;
+        .panel:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 20px rgba(0, 212, 255, 0.05);
+            border-color: rgba(0, 212, 255, 0.15);
         }
 
         .panel-head {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--line);
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--line-subtle);
             display: flex;
             align-items: center;
             gap: 10px;
+            justify-content: space-between;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .ph-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .panel-head-label {
-            font-family: var(--mono);
-            font-size: 0.7rem;
+            font-family: var(--sans);
+            font-size: 0.9rem;
             font-weight: 700;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            color: var(--muted);
+            color: #fff;
         }
 
         .panel-icon-box {
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
         .pib-cyan {
-            background: rgba(0, 212, 255, 0.1);
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 212, 255, 0.05));
             color: var(--g);
+            border: 1px solid rgba(0, 212, 255, 0.2);
         }
 
         .pib-green {
-            background: rgba(0, 229, 160, 0.1);
+            background: linear-gradient(135deg, rgba(0, 242, 173, 0.2), rgba(0, 242, 173, 0.05));
             color: var(--green);
+            border: 1px solid rgba(0, 242, 173, 0.2);
+        }
+
+        .pib-amber {
+            background: linear-gradient(135deg, rgba(255, 170, 0, 0.2), rgba(255, 170, 0, 0.05));
+            color: var(--amber);
+            border: 1px solid rgba(255, 170, 0, 0.2);
         }
 
         .panel-body {
-            padding: 20px;
+            padding: 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* ─── CORNER ACCENTS ─── */
-        .panel-corner {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            border-color: rgba(0, 212, 255, 0.3);
-            border-style: solid;
+        /* ─── INPUT / CAMERA ZONE ─── */
+        .input-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--line-subtle);
+            padding-bottom: 12px;
         }
 
-        .pc-tl {
-            top: 6px;
-            left: 6px;
-            border-width: 1px 0 0 1px;
+        .i-tab {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            font-family: var(--sans);
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .pc-tr {
-            top: 6px;
-            right: 6px;
-            border-width: 1px 1px 0 0;
+        .i-tab.active {
+            background: var(--g-dim);
+            color: var(--g);
+            border: 1px solid var(--line-bright);
+            box-shadow: 0 4px 10px rgba(0, 212, 255, 0.1);
+            transform: translateY(-2px);
         }
 
-        .pc-bl {
-            bottom: 6px;
-            left: 6px;
-            border-width: 0 0 1px 1px;
+        .i-tab:hover:not(.active) {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
         }
 
-        .pc-br {
-            bottom: 6px;
-            right: 6px;
-            border-width: 0 1px 1px 0;
-        }
-
-        /* ─── UPLOAD ZONE ─── */
         .upload-zone {
-            border: 2px dashed rgba(0, 212, 255, 0.15);
-            border-radius: 10px;
-            min-height: 220px;
+            border: 2px dashed var(--line-bright);
+            border-radius: 12px;
+            min-height: 240px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 14px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
-            background: rgba(0, 212, 255, 0.02);
-            margin-bottom: 16px;
+            background: linear-gradient(180deg, rgba(0, 212, 255, 0.02), rgba(0, 212, 255, 0.05));
+            margin-bottom: 20px;
+        }
+
+        .upload-zone::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(0, 212, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
         }
 
         .upload-zone:hover,
         .upload-zone.dragover {
             border-color: var(--g);
-            background: rgba(0, 212, 255, 0.05);
-            box-shadow: var(--g-glow), inset 0 0 30px rgba(0, 212, 255, 0.03);
+            transform: scale(1.02);
+        }
+
+        .upload-zone:hover::after,
+        .upload-zone.dragover::after {
+            opacity: 1;
         }
 
         .upload-zone input[type=file] {
@@ -402,528 +489,89 @@
             cursor: pointer;
             width: 100%;
             height: 100%;
+            z-index: 2;
         }
 
         .uz-icon {
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 229, 160, 0.06));
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            border-radius: 12px;
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 229, 160, 0.05));
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
-            color: var(--g);
-            transition: transform 0.3s, box-shadow 0.3s;
+            font-size: 26px;
+            color: #fff;
+            transition: transform 0.4s, box-shadow 0.4s;
+            z-index: 1;
+            box-shadow: inset 0 0 15px rgba(0, 212, 255, 0.2);
         }
 
         .upload-zone:hover .uz-icon {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.2);
+            transform: translateY(-6px) scale(1.1);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3), inset 0 0 15px rgba(0, 212, 255, 0.5);
+            color: var(--g);
         }
 
         .uz-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--text);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
             text-align: center;
+            z-index: 1;
         }
 
         .uz-sub {
-            font-size: 0.78rem;
-            color: var(--muted);
-            text-align: center;
-            line-height: 1.5;
-        }
-
-        .uz-formats {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .fmt {
-            font-family: var(--mono);
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            padding: 3px 8px;
-            border-radius: 4px;
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            color: var(--g);
-            background: rgba(0, 212, 255, 0.06);
-        }
-
-        /* ─── PREVIEW ─── */
-        .preview-wrap {
-            display: none;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            position: relative;
-            margin-bottom: 16px;
-        }
-
-        .preview-wrap.show {
-            display: block;
-            animation: imgIn 0.4s ease;
-        }
-
-        @keyframes imgIn {
-            from {
-                opacity: 0;
-                transform: scale(0.97)
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1)
-            }
-        }
-
-        .preview-wrap img {
-            width: 100%;
-            max-height: 220px;
-            object-fit: contain;
-            display: block;
-            background: #020c10;
-        }
-
-        .preview-bar {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            display: flex;
-            gap: 6px;
-        }
-
-        .preview-tag {
-            font-family: var(--mono);
-            font-size: 0.65rem;
-            font-weight: 700;
-            background: rgba(3, 8, 13, 0.85);
-            border: 1px solid rgba(0, 212, 255, 0.25);
-            border-radius: 4px;
-            padding: 3px 8px;
-            color: var(--g);
-            backdrop-filter: blur(8px);
-        }
-
-        .clear-btn {
-            font-size: 0.65rem;
-            font-weight: 700;
-            background: rgba(255, 61, 90, 0.15);
-            border: 1px solid rgba(255, 61, 90, 0.3);
-            border-radius: 4px;
-            padding: 3px 8px;
-            color: var(--red);
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: var(--mono);
-        }
-
-        .clear-btn:hover {
-            background: rgba(255, 61, 90, 0.28);
-        }
-
-        /* ─── SCAN BUTTON ─── */
-        .scan-btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 229, 160, 0.1));
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            color: var(--g);
-            font-family: var(--mono);
-            font-size: 0.85rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--g-glow);
-        }
-
-        .scan-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.15), transparent);
-            transition: left 0.5s;
-        }
-
-        .scan-btn:hover:not(:disabled)::before {
-            left: 100%;
-        }
-
-        .scan-btn:hover:not(:disabled) {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(0, 229, 160, 0.15));
-            transform: translateY(-1px);
-            box-shadow: 0 0 40px rgba(0, 212, 255, 0.3);
-        }
-
-        .scan-btn:disabled {
-            opacity: 0.35;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        .scan-spinner {
-            display: none;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(0, 212, 255, 0.2);
-            border-top-color: var(--g);
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg)
-            }
-        }
-
-        /* ─── RESULTS PANEL RIGHT ─── */
-        .results-area {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        /* EMPTY STATE */
-        .empty-state {
-            border: 2px dashed rgba(0, 212, 255, 0.08);
-            border-radius: 12px;
-            padding: 60px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            background: rgba(0, 212, 255, 0.01);
-            animation: fadeUp 0.5s ease;
-        }
-
-        .empty-icon {
-            width: 72px;
-            height: 72px;
-            background: rgba(0, 212, 255, 0.06);
-            border: 1px solid rgba(0, 212, 255, 0.12);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            color: var(--muted);
-        }
-
-        .empty-state h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--muted);
-            font-family: var(--mono);
-        }
-
-        .empty-state p {
-            font-size: 0.85rem;
-            color: var(--muted);
-            opacity: 0.6;
-            text-align: center;
-            max-width: 320px;
-            line-height: 1.6;
-        }
-
-        /* URGENCY BANNER */
-        .urgency-banner {
-            padding: 20px 24px;
-            border-radius: 12px;
-            display: flex;
-            align-items: flex-start;
-            gap: 18px;
-            border: 1px solid;
-            position: relative;
-            overflow: hidden;
-            animation: fadeUp 0.4s ease;
-        }
-
-        .urgency-banner::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: currentColor;
-            opacity: 0.4;
-        }
-
-        .ub-CRITICAL {
-            background: var(--red-dim);
-            border-color: rgba(255, 61, 90, 0.25);
-            color: var(--red);
-        }
-
-        .ub-WARNING {
-            background: var(--amber-dim);
-            border-color: rgba(255, 179, 0, 0.25);
-            color: var(--amber);
-        }
-
-        .ub-SAFE {
-            background: var(--green-dim);
-            border-color: rgba(0, 229, 160, 0.25);
-            color: var(--green);
-        }
-
-        .ub-icon-box {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .ub-content {
-            flex: 1;
-        }
-
-        .ub-level {
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .ub-level::before {
-            content: '';
-            width: 20px;
-            height: 1px;
-            background: currentColor;
-            opacity: 0.5;
-        }
-
-        .ub-reason {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: var(--text);
-        }
-
-        /* RESULT SECTION CARDS */
-        .rsec {
-            border-radius: 12px;
-            border: 1px solid rgba(0, 212, 255, 0.1);
-            overflow: hidden;
-            animation: fadeUp 0.4s ease;
-        }
-
-        .rsec-head {
-            padding: 13px 20px;
-            border-bottom: 1px solid rgba(0, 212, 255, 0.07);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(0, 212, 255, 0.03);
-        }
-
-        .rsec-title {
-            font-family: var(--mono);
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--muted);
-        }
-
-        .rsec-body {
-            padding: 16px 20px;
-        }
-
-        /* MEDS */
-        .med-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .med-tag {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            padding: 6px 14px;
-            border-radius: 6px;
-            background: rgba(0, 212, 255, 0.07);
-            border: 1px solid rgba(0, 212, 255, 0.15);
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text);
-            transition: all 0.2s;
-        }
-
-        .med-tag:hover {
-            background: rgba(0, 212, 255, 0.12);
-            border-color: rgba(0, 212, 255, 0.3);
-            transform: translateY(-1px);
-        }
-
-        .med-tag i {
-            color: var(--g);
-            font-size: 11px;
-            opacity: 0.7;
-        }
-
-        /* INTERACTIONS */
-        .icard {
-            border-left: 3px solid var(--red);
-            background: var(--red-dim);
-            border-radius: 0 8px 8px 0;
-            padding: 14px 16px;
-            margin-bottom: 10px;
-            border-top: 1px solid rgba(255, 61, 90, 0.15);
-            border-right: 1px solid rgba(255, 61, 90, 0.15);
-            border-bottom: 1px solid rgba(255, 61, 90, 0.15);
-            transition: transform 0.2s;
-        }
-
-        .icard:last-child {
-            margin-bottom: 0;
-        }
-
-        .icard:hover {
-            transform: translateX(4px);
-        }
-
-        .icard-drugs {
-            font-family: var(--mono);
             font-size: 0.8rem;
-            font-weight: 700;
-            color: #ff8899;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .icard-risk {
-            font-size: 0.88rem;
-            color: #ffb3bc;
-            line-height: 1.5;
-        }
-
-        /* ACTIONS */
-        .acard {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            border-left: 3px solid var(--green);
-            background: var(--green-dim);
-            border-radius: 0 8px 8px 0;
-            padding: 13px 16px;
-            margin-bottom: 10px;
-            border-top: 1px solid rgba(0, 229, 160, 0.15);
-            border-right: 1px solid rgba(0, 229, 160, 0.15);
-            border-bottom: 1px solid rgba(0, 229, 160, 0.15);
-            transition: transform 0.2s;
-        }
-
-        .acard:last-child {
-            margin-bottom: 0;
-        }
-
-        .acard:hover {
-            transform: translateX(4px);
-        }
-
-        .acard-num {
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--green);
-            padding-top: 2px;
-            flex-shrink: 0;
-            min-width: 24px;
-        }
-
-        .acard p {
-            font-size: 0.88rem;
-            color: #a7f3d0;
+            color: var(--text-muted);
+            text-align: center;
             line-height: 1.6;
+            z-index: 1;
         }
 
-        /* DOCTOR NOTE */
-        .dnote {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 8px;
-            padding: 20px 20px 20px 28px;
-            font-style: italic;
-            color: #8ca8b0;
-            line-height: 1.8;
-            font-size: 0.9rem;
-            position: relative;
-        }
-
-        .dnote::before {
-            content: '❝';
-            position: absolute;
-            top: 12px;
-            left: 10px;
-            font-size: 1.4rem;
-            color: rgba(0, 212, 255, 0.15);
-            font-style: normal;
-        }
-
-        /* SCAN OVERLAY (loading state) */
-        .scan-overlay {
+        /* Camera Details */
+        .camera-zone {
             display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(3, 8, 13, 0.92);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
             flex-direction: column;
-            gap: 24px;
-        }
-
-        .scan-overlay.show {
-            display: flex;
-        }
-
-        .scan-frame {
-            width: 200px;
-            height: 200px;
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            border-radius: 12px;
+            gap: 12px;
+            margin-bottom: 20px;
             position: relative;
+        }
+
+        .vid-wrapper {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid var(--line-bright);
+            background: #000;
+            min-height: 240px;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8);
         }
 
-        .scan-frame::before,
-        .scan-frame::after {
+        #cameraFeed {
+            width: 100%;
+            height: auto;
+            display: none;
+        }
+
+        .vid-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            border: 2px solid rgba(0, 255, 200, 0.6);
+            margin: 30px;
+            border-radius: 8px;
+            animation: pulseBorder 2s infinite;
+            box-shadow: 0 0 15px rgba(0, 242, 173, 0.3), inset 0 0 15px rgba(0, 242, 173, 0.3);
+        }
+
+        /* Corner brackets inside video overlay */
+        .vid-overlay::before,
+        .vid-overlay::after {
             content: '';
             position: absolute;
             width: 20px;
@@ -932,16 +580,549 @@
             border-style: solid;
         }
 
+        .vid-overlay::before {
+            top: -2px;
+            left: -2px;
+            border-width: 3px 0 0 3px;
+        }
+
+        .vid-overlay::after {
+            bottom: -2px;
+            right: -2px;
+            border-width: 0 3px 3px 0;
+        }
+
+        .cam-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, rgba(0, 212, 255, 0.1), rgba(0, 242, 173, 0.1));
+            border: 1px solid var(--g);
+            color: var(--g);
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: var(--sans);
+            font-size: 0.9rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            letter-spacing: 0.1em;
+        }
+
+        .cam-btn:hover {
+            background: linear-gradient(90deg, var(--g), var(--green));
+            color: #000;
+            box-shadow: var(--g-glow);
+            transform: translateY(-2px);
+        }
+
+        @keyframes pulseBorder {
+
+            0%,
+            100% {
+                opacity: 0.4;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Preview */
+        .preview-wrap {
+            display: none;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid var(--line-bright);
+            position: relative;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .preview-wrap.show {
+            display: block;
+            animation: imgIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes imgIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .preview-wrap img {
+            width: 100%;
+            max-height: 240px;
+            object-fit: cover;
+            display: block;
+            filter: contrast(1.1) brightness(1.1);
+        }
+
+        .scan-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--g), var(--g2));
+            color: #000;
+            font-family: var(--sans);
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.4);
+            margin-top: auto;
+        }
+
+        .scan-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            transform: translateX(-100%);
+            transition: 0.5s;
+        }
+
+        .scan-btn:hover:not(:disabled)::after {
+            transform: translateX(100%);
+        }
+
+        .scan-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.6);
+        }
+
+        .scan-btn:disabled {
+            background: rgba(50, 70, 80, 0.5);
+            color: #888;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* ─── ANATOMY SVG ANIMATIONS ─── */
+        .anatomy-view {
+            width: 100%;
+            flex: 1;
+            min-height: 440px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(ellipse at center, rgba(0, 212, 255, 0.08) 0%, transparent 60%);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* Holographic Scanline Sweep over Box */
+        .anatomy-view::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(to bottom, transparent, rgba(0, 212, 255, 0.15), var(--g));
+            opacity: 0.3;
+            animation: sweepingScan 4s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes sweepingScan {
+            0% {
+                top: -100%
+            }
+
+            100% {
+                top: 200%
+            }
+        }
+
+        .anatomy-svg {
+            width: 220px;
+            height: auto;
+            transform-origin: center;
+            filter: drop-shadow(0 0 15px rgba(0, 212, 255, 0.2));
+        }
+
+        .an-organ {
+            fill: rgba(0, 212, 255, 0.05);
+            stroke: var(--g);
+            stroke-width: 1.5;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            filter: drop-shadow(0 0 2px rgba(0, 212, 255, 0.5));
+        }
+
+        .an-base {
+            fill: transparent;
+            stroke: rgba(0, 212, 255, 0.3);
+            stroke-width: 1;
+            stroke-dasharray: 4 4;
+        }
+
+        @keyframes pulseAlert {
+
+            0%,
+            100% {
+                fill: rgba(255, 51, 85, 0.3);
+                filter: drop-shadow(0 0 10px var(--red));
+                stroke-width: 2.5;
+            }
+
+            50% {
+                fill: rgba(255, 51, 85, 0.8);
+                filter: drop-shadow(0 0 30px var(--red));
+                stroke-width: 3.5;
+                stroke: #fff;
+            }
+        }
+
+        .an-organ.danger {
+            stroke: var(--red);
+            animation: pulseAlert 1.2s infinite ease-in-out;
+        }
+
+        .an-overlay-text {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .an-overlay-text span {
+            color: #fff;
+            display: block;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+            font-family: var(--sans);
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-shadow: 0 0 10px var(--g);
+        }
+
+        /* ─── STAGGERED RESULTS ─── */
+        .results-area {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: 100%;
+        }
+
+        .empty-state {
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 60px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            background: rgba(0, 0, 0, 0.2);
+            animation: fadeUp 0.5s ease;
+            height: 100%;
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid var(--line-bright);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: var(--text-muted);
+            box-shadow: var(--g-glow);
+        }
+
+        .urgency-banner {
+            padding: 24px;
+            border-radius: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            border: 1px solid;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ub-CRITICAL {
+            background: linear-gradient(135deg, rgba(255, 51, 85, 0.15), rgba(0, 0, 0, 0.5));
+            border-color: rgba(255, 51, 85, 0.4);
+            color: var(--red);
+            box-shadow: 0 10px 30px rgba(255, 51, 85, 0.2);
+        }
+
+        .ub-WARNING {
+            background: linear-gradient(135deg, rgba(255, 170, 0, 0.15), rgba(0, 0, 0, 0.5));
+            border-color: rgba(255, 170, 0, 0.4);
+            color: var(--amber);
+            box-shadow: 0 10px 30px rgba(255, 170, 0, 0.15);
+        }
+
+        .ub-SAFE {
+            background: linear-gradient(135deg, rgba(0, 242, 173, 0.15), rgba(0, 0, 0, 0.5));
+            border-color: rgba(0, 242, 173, 0.4);
+            color: var(--green);
+            box-shadow: 0 10px 30px rgba(0, 242, 173, 0.15);
+        }
+
+        .ub-icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ub-level {
+            font-family: var(--sans);
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ub-reason {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #fff;
+            font-weight: 300;
+        }
+
+        /* Card Animation Base */
+        .anim-slide-up {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUpStagger 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeUpStagger {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .rsec {
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .rsec-head {
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .rsec-title {
+            font-family: var(--sans);
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #fff;
+        }
+
+        .rsec-body {
+            padding: 20px 24px;
+        }
+
+        .med-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: rgba(0, 212, 255, 0.08);
+            border: 1px solid var(--line-bright);
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #fff;
+            transition: all 0.3s;
+            margin: 0 8px 8px 0;
+        }
+
+        .med-tag:hover {
+            background: rgba(0, 212, 255, 0.15);
+            border-color: var(--g);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2);
+        }
+
+        .med-tag i {
+            color: var(--g);
+            font-size: 13px;
+        }
+
+        .icard {
+            display: flex;
+            flex-direction: column;
+            border-left: 4px solid var(--red);
+            background: linear-gradient(90deg, rgba(255, 51, 85, 0.1), transparent);
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            border-top: 1px solid rgba(255, 51, 85, 0.15);
+            border-right: 1px solid rgba(255, 51, 85, 0.05);
+            border-bottom: 1px solid rgba(255, 51, 85, 0.15);
+            transition: transform 0.3s;
+        }
+
+        .icard:hover {
+            transform: translateX(6px);
+            background: linear-gradient(90deg, rgba(255, 51, 85, 0.15), rgba(255, 255, 255, 0.02));
+        }
+
+        .icard-drugs {
+            font-family: var(--sans);
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #ffaebb;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .icard-risk {
+            font-size: 0.95rem;
+            color: #fff;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        .acard {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-left: 4px solid var(--green);
+            background: linear-gradient(90deg, rgba(0, 242, 173, 0.1), transparent);
+            border-radius: 0 10px 10px 0;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(0, 242, 173, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .acard:hover {
+            transform: translateX(6px);
+            background: linear-gradient(90deg, rgba(0, 242, 173, 0.15), rgba(255, 255, 255, 0.02));
+        }
+
+        .acard-num {
+            font-family: var(--mono);
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--green);
+            text-shadow: 0 0 10px var(--green);
+        }
+
+        .acard p {
+            font-size: 0.95rem;
+            color: #fff;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        /* SCAN OVERLAY FULLSCREEN */
+        .scan-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(1, 4, 9, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .scan-overlay.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        .scan-frame {
+            width: 240px;
+            height: 240px;
+            border: 2px solid rgba(0, 212, 255, 0.15);
+            border-radius: 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 50px rgba(0, 212, 255, 0.1);
+        }
+
+        .scan-frame::before,
+        .scan-frame::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-color: var(--g);
+            border-style: solid;
+        }
+
         .scan-frame::before {
-            top: -1px;
-            left: -1px;
-            border-width: 2px 0 0 2px;
+            top: -2px;
+            left: -2px;
+            border-width: 4px 0 0 4px;
+            border-radius: 4px 0 0 0;
         }
 
         .scan-frame::after {
-            bottom: -1px;
-            right: -1px;
-            border-width: 0 2px 2px 0;
+            bottom: -2px;
+            right: -2px;
+            border-width: 0 4px 4px 0;
+            border-radius: 0 0 4px 0;
         }
 
         .scan-line-anim {
@@ -949,282 +1130,648 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--g), transparent);
-            box-shadow: 0 0 12px var(--g);
-            animation: scanline 1.5s ease-in-out infinite;
+            height: 3px;
+            background: var(--g);
+            box-shadow: 0 0 20px 5px rgba(0, 212, 255, 0.5);
+            animation: scanline 1.2s ease-in-out infinite alternate;
         }
 
         @keyframes scanline {
             0% {
-                top: 0;
+                top: 0%;
                 opacity: 1
-            }
-
-            90% {
-                top: 100%;
-                opacity: 0.3
             }
 
             100% {
                 top: 100%;
-                opacity: 0
+                opacity: 0.5
             }
         }
 
         .scan-icon {
-            font-size: 3rem;
-            color: rgba(0, 212, 255, 0.2);
+            font-size: 4rem;
+            color: rgba(0, 212, 255, 0.5);
+            filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5));
+            animation: pulseLogo 2s infinite;
         }
-
-        .scan-text {
-            font-family: var(--mono);
-            font-size: 0.8rem;
-            letter-spacing: 0.12em;
-            color: var(--g);
-            text-transform: uppercase;
-            animation: blink 1.2s ease infinite;
-        }
-
-        @keyframes blink {
+        @keyframes pulseLogo {
 
             0%,
             100% {
-                opacity: 0.4
+                transform: scale(1)
             }
 
             50% {
-                opacity: 1
+                transform: scale(1.1)
             }
+        }
+
+        .logo-name {
+            font-family: var(--sans);
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 0.2em;
+            background: linear-gradient(90deg, #fff, var(--g));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .scan-text {
+            font-family: var(--sans);
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 0.2em;
+            color: #fff;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px var(--g);
         }
 
         .scan-sub {
             font-family: var(--mono);
-            font-size: 0.65rem;
-            color: var(--muted);
-            letter-spacing: 0.08em;
-        }
-
-        /* ANIM */
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(12px)
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0)
-            }
+            font-size: 0.8rem;
+            color: var(--g);
+            letter-spacing: 0.1em;
+            opacity: 0.8;
         }
 
         .hidden {
             display: none !important;
         }
+
+        /* --- PHASE 4 UTILS --- */
+        .lang-select {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--line-subtle); color: #fff;
+            padding: 8px 12px; border-radius: 8px; font-family: var(--mono); font-size: 0.75rem; font-weight: 700;
+            outline: none; cursor: pointer; backdrop-filter: blur(10px); transition: 0.3s;
+        }
+        .lang-select:hover { border-color: var(--g); box-shadow: var(--g-glow); }
+        .lang-select option { background: var(--deep); color: #fff; }
+        
+        .er-btn {
+            background: linear-gradient(135deg, var(--red), #b30000); color: #fff; border: 1px solid #ff6666;
+            padding: 12px 20px; border-radius: 8px; font-family: var(--sans); font-size: 0.9rem; font-weight: 800; cursor: pointer; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.1em;
+            box-shadow: 0 10px 30px rgba(255,51,85,0.4); animation: pulseER 1.5s infinite; margin-top: 10px; width: 100%; justify-content: center;
+        }
+        @keyframes pulseER { 0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(255,51,85,0.4); } 50% { transform: scale(1.02); box-shadow: 0 15px 40px rgba(255,51,85,0.6); } }
+        .er-btn:hover { background: #fff; color: var(--red); border-color: var(--red); filter: drop-shadow(0 0 15px var(--red)); animation: none; transform: translateY(-2px);}
+
+        /* --- HISTORY DRAWER --- */
+        .history-drawer {
+            position: fixed; top: 0; right: -400px; width: 400px; height: 100vh;
+            background: rgba(10, 18, 28, 0.95); backdrop-filter: blur(40px); border-left: 1px solid var(--line-bright);
+            box-shadow: -10px 0 50px rgba(0,0,0,0.8); z-index: 2000; transition: right 0.4s ease;
+            display: flex; flex-direction: column; padding: 24px;
+        }
+        .history-drawer.open { right: 0; }
+        .hd-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line-subtle); padding-bottom: 16px; margin-bottom: 20px; }
+        .hd-title { font-family: var(--sans); font-size: 1.2rem; font-weight: 800; color: #fff; letter-spacing: 0.1em; text-transform: uppercase; }
+        .hd-close { cursor: pointer; color: var(--red); font-size: 20px; transition: transform 0.2s; }
+        .hd-close:hover { transform: scale(1.2); }
+        .hd-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .h-item {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--line-subtle); border-radius: 12px;
+            padding: 16px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; gap: 8px;
+        }
+        .h-item:hover { border-color: var(--g); background: rgba(0,212,255,0.05); transform: translateX(-4px); }
+        .h-date { font-family: var(--mono); font-size: 0.75rem; color: var(--text-muted); }
+        
+        /* --- UTILITY BUTTONS --- */
+        .util-btn {
+            background: rgba(255,255,255,0.05); border: 1px solid var(--line-subtle); color: #fff;
+            padding: 6px 12px; border-radius: 6px; font-family: var(--sans); font-size: 0.8rem; font-weight: 700;
+            cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .util-btn:hover { background: rgba(0,212,255,0.15); border-color: var(--g); color: var(--g); }
+        
+        /* --- PRINT STYLES --- */
+        @media print {
+            body { background: #fff !important; color: #000 !important; }
+            body::before, body::after, .ambient-orb, .topbar, .panel:nth-child(1), .input-tabs, .util-btn, .history-drawer { display: none !important; }
+            .shell { padding: 0 !important; }
+            .main-grid { display: block !important; }
+            .anatomy-view { min-height: 250px !important; }
+            .anatomy-view::before { display: none !important; }
+            .panel { background: #fff !important; box-shadow: none !important; border: 1px solid #ddd !important; border-radius: 0 !important; backdrop-filter: none !important; page-break-inside: avoid; margin-bottom: 20px;}
+            .panel-head { background: #f0f0f0 !important; border-bottom: 2px solid #ccc !important; }
+            .panel-head-label, .rsec-title { color: #000 !important; -webkit-text-fill-color: #000 !important;}
+            .an-organ { stroke: #000 !important; fill: none !important; filter: none !important;}
+            .an-organ.danger { stroke: #d00 !important; stroke-width: 3px !important; fill: rgba(200,0,0,0.1) !important; animation: none !important;}
+            .an-overlay-text span { color: #000 !important; text-shadow: none !important; }
+            .urgency-banner { border: 2px solid #000 !important; background: #fff !important; color: #000 !important; box-shadow: none !important; }
+            .ub-reason { color: #333 !important; }
+            .rsec { background: #fff !important; border: 1px solid #ccc !important; box-shadow: none !important; }
+            .acard, .icard { background: #fff !important; border-width: 1px 1px 1px 4px !important; box-shadow: none !important;}
+            .acard p, .icard .icard-risk { color:#000 !important; }
+            .icard-drugs { color: #000 !important; }
+            .med-tag { color: #000 !important; background: #eee !important; border-color: #ccc !important; }
+            * { animation: none !important; transition: none !important; }
+        }
     </style>
 </head>
 
 <body>
-
-    <div class="amb amb-1"></div>
-    <div class="amb amb-2"></div>
+    <!-- Background FX -->
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
 
     <!-- SCAN OVERLAY -->
     <div class="scan-overlay" id="scanOverlay">
         <div class="scan-frame">
-            <div class="scan-line-anim"></div>
-            <i class="fa-solid fa-prescription-bottle-medical scan-icon"></i>
+            <div class="scan-line-anim"></div><i class="fa-solid fa-atom scan-icon"></i>
         </div>
-        <div class="scan-text">Scanning image…</div>
-        <div class="scan-sub">Running clinical pharmacist analysis</div>
+        <div class="scan-text">Executing Neural Scan</div>
+        <div class="scan-sub">Processing Matrix Telemetry...</div>
     </div>
 
     <div class="shell">
-
-        <!-- TOP BAR -->
+        <!-- TOP NAVIGATION -->
         <div class="topbar">
             <div class="logo-area">
-                <div class="logo-hex"><i class="fa-solid fa-prescription-bottle-medical"></i></div>
+                <div class="logo-hex"><i class="fa-solid fa-microchip"></i></div>
                 <div>
                     <div class="logo-name">MEDISAFE_AI</div>
-                    <div class="logo-sub">Clinical Vision System v2.4</div>
+                    <div class="logo-sub">Project WOW / Clinical Vision Subsystem</div>
                 </div>
             </div>
             <div class="sys-status">
-                <div class="status-pill">
-                    <div class="pulse-dot"></div>SYSTEM ONLINE
+                <select id="langSelect" class="lang-select" onchange="if(b64) runAnalysis()">
+                    <option value="English">EN (English)</option>
+                    <option value="Hindi">HI (Hindi)</option>
+                    <option value="Kannada">KN (Kannada)</option>
+                    <option value="Tamil">TA (Tamil)</option>
+                    <option value="Telugu">TE (Telugu)</option>
+                </select>
+                <div id="micToggleBtn" class="audio-toggle" style="border-color:var(--g)" onclick="toggleMic()">
+                    <i class="fa-solid fa-microphone-slash"></i> MIC OFF
                 </div>
-                <div class="api-pill">
-                    <i class="fa-solid fa-key"></i>
-                    <input type="password" id="apiKey" placeholder="Gemini API key…" autocomplete="off">
+                <div class="audio-toggle" style="border-color:var(--g)" onclick="toggleHistory()">
+                    <i class="fa-solid fa-clock-rotate-left"></i> HISTORY
+                </div>
+                <div id="audioToggleBtn" class="audio-toggle active" title="Toggle Audio Synthesizer Alerts"
+                    onclick="toggleAudio()">
+                    <i class="fa-solid fa-volume-high"></i> TTS ENABLED
                 </div>
             </div>
         </div>
 
-        <!-- MAIN GRID -->
+        <!-- 3-COL GRID -->
         <div class="main-grid">
 
-            <!-- LEFT: INPUT -->
-            <div>
-                <div class="panel" style="margin-bottom:16px">
-                    <div class="pc-tl panel-corner"></div>
-                    <div class="pc-tr panel-corner"></div>
-                    <div class="pc-bl panel-corner"></div>
-                    <div class="pc-br panel-corner"></div>
-                    <div class="panel-head">
-                        <div class="panel-icon-box pib-cyan"><i class="fa-solid fa-camera"></i></div>
-                        <span class="panel-head-label">Image Input</span>
-                    </div>
-                    <div class="panel-body">
-
-                        <!-- UPLOAD ZONE -->
-                        <div class="upload-zone" id="uploadZone">
-                            <input type="file" id="fileInput" accept="image/*" onchange="handleFile(event)">
-                            <div class="uz-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
-                            <div class="uz-title">Drop prescription or bottles</div>
-                            <div class="uz-sub">Drag & drop or click to browse<br>Prescriptions · Pill bottles · Lab
-                                docs</div>
-                            <div class="uz-formats">
-                                <span class="fmt">JPG</span><span class="fmt">PNG</span><span
-                                    class="fmt">WEBP</span><span class="fmt">GIF</span>
-                            </div>
-                        </div>
-
-                        <!-- PREVIEW -->
-                        <div class="preview-wrap" id="previewWrap">
-                            <img id="previewImg" src="" alt="preview">
-                            <div class="preview-bar">
-                                <span class="preview-tag" id="previewTag">IMAGE</span>
-                                <span class="clear-btn" onclick="clearImg()">✕ Clear</span>
-                            </div>
-                        </div>
-
-                        <!-- SCAN BUTTON -->
-                        <button class="scan-btn" id="scanBtn" disabled onclick="runAnalysis()">
-                            <i class="fa-solid fa-microscope" id="btnIcon"></i>
-                            <span id="btnLabel">INITIATE SCAN</span>
-                            <div class="scan-spinner" id="scanSpinner"></div>
-                        </button>
-
+            <!-- COL 1: INPUT/CAMERA -->
+            <div class="panel">
+                <div class="panel-head">
+                    <div class="ph-left">
+                        <div class="panel-icon-box pib-cyan"><i class="fa-solid fa-camera-viewfinder"></i></div>
+                        <span class="panel-head-label">Vision Ingestion Matrix</span>
                     </div>
                 </div>
-
-                <!-- INFO PANEL -->
-                <div class="panel">
-                    <div class="panel-head">
-                        <div class="panel-icon-box pib-green"><i class="fa-solid fa-circle-info"></i></div>
-                        <span class="panel-head-label">Capabilities</span>
+                <div class="panel-body">
+                    <div class="input-tabs" role="tablist">
+                        <button id="tabUpload" class="i-tab active" role="tab" aria-label="Upload Scan" onclick="switchTab('upload')"><i
+                                class="fa-solid fa-upload"></i> Local File</button>
+                        <button id="tabCamera" class="i-tab" role="tab" aria-label="Optics Scanner" onclick="switchTab('camera')"><i
+                                class="fa-solid fa-video"></i> Optics</button>
+                        <button id="tabBio" class="i-tab" role="tab" aria-label="Biometrics Scanner" onclick="switchTab('bio')" style="color:var(--amber)"><i
+                                class="fa-solid fa-heart-pulse"></i> Biometrics</button>
                     </div>
-                    <div class="panel-body">
-                        <div style="display:flex;flex-direction:column;gap:10px">
-                            <div style="display:flex;align-items:center;gap:10px;font-size:0.83rem;color:var(--muted)">
-                                <i class="fa-solid fa-check"
-                                    style="color:var(--green);font-size:10px;flex-shrink:0"></i>
-                                Drug interaction detection
-                            </div>
-                            <div style="display:flex;align-items:center;gap:10px;font-size:0.83rem;color:var(--muted)">
-                                <i class="fa-solid fa-check"
-                                    style="color:var(--green);font-size:10px;flex-shrink:0"></i>
-                                Dosage risk analysis
-                            </div>
-                            <div style="display:flex;align-items:center;gap:10px;font-size:0.83rem;color:var(--muted)">
-                                <i class="fa-solid fa-check"
-                                    style="color:var(--green);font-size:10px;flex-shrink:0"></i>
-                                Contraindication flagging
-                            </div>
-                            <div style="display:flex;align-items:center;gap:10px;font-size:0.83rem;color:var(--muted)">
-                                <i class="fa-solid fa-check"
-                                    style="color:var(--green);font-size:10px;flex-shrink:0"></i>
-                                Clinical action recommendations
-                            </div>
-                            <div
-                                style="margin-top:6px;padding:10px;background:rgba(255,179,0,0.06);border:1px solid rgba(255,179,0,0.15);border-radius:6px;font-size:0.75rem;color:rgba(255,179,0,0.7);line-height:1.5">
-                                <i class="fa-solid fa-triangle-exclamation" style="margin-right:5px"></i>
-                                Not a substitute for professional medical advice.
-                            </div>
+
+                    <!-- BIOMETRIC OPTICAL ZONE -->
+                    <div class="bio-zone" id="bioZone">
+                        <div class="bio-wrapper">
+                            <video id="bioFeed" autoplay playsinline muted></video>
+                            <div class="bio-target"></div>
+                            <div class="bio-bpm" id="bioBpmDisplay">-- BPM</div>
+                            <div id="bioLoading" style="position:absolute; font-family:var(--mono); color:var(--amber); font-size:0.85rem; z-index:10;">Initializing rPPG...</div>
+                        </div>
+                        <canvas id="bioGraph" class="bio-graph-canvas"></canvas>
+                        <canvas id="bioHiddenCanvas" style="display:none;"></canvas>
+                        <button class="cam-btn" style="background:rgba(255,170,0,0.1); border-color:var(--amber); color:var(--amber);" onclick="stopBio()"><i class="fa-solid fa-stop"></i> CUT BIOMETRIC STREAM</button>
+                    </div>
+
+                    <div class="upload-zone" id="uploadZone">
+                        <input type="file" id="fileInput" accept="image/*" onchange="handleFile(event)">
+                        <div class="uz-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                        <div class="uz-title">Drop clinical targets here</div>
+                        <div class="uz-sub">Prescriptions · Pill bottles · Lab docs</div>
+                    </div>
+
+                    <div class="camera-zone" id="cameraZone">
+                        <div class="vid-wrapper">
+                            <video id="cameraFeed" autoplay playsinline></video>
+                            <div class="vid-overlay" id="vidOverlay"></div>
+                            <div id="camLoading"
+                                style="position:absolute; font-family:var(--mono); color:var(--g); font-size:0.85rem; z-index:10;">
+                                Initializing Optics...</div>
+                        </div>
+                        <button class="cam-btn" onclick="captureCamera()"><i class="fa-solid fa-crosshairs"></i> CAPTURE
+                            OPTICAL TARGET</button>
+                        <canvas id="cameraCanvas" style="display:none;"></canvas>
+                    </div>
+
+                    <div class="preview-wrap" id="previewWrap" style="position:relative;">
+                        <img id="previewImg" src="" alt="preview" style="width:100%; height:100%; object-fit:contain;">
+                        <canvas id="arCanvas" style="position:absolute; inset:0; pointer-events:none; z-index:10;"></canvas>
+                        <div class="preview-bar" style="position:absolute; bottom:0; left:0; width:100%;">
+                            <span class="preview-tag" id="previewTag">RAW DATA</span>
+                            <span class="clear-btn"
+                                style="background:rgba(255,0,0,0.8);color:#fff;border-color:rgba(255,0,0,1);"
+                                onclick="clearImg()"><i class="fa-solid fa-xmark"></i> DUMP</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- RIGHT: RESULTS -->
-            <div class="results-area">
+            <!-- COL 2: HUD -->
+            <div class="panel">
+                <div class="panel-head">
+                    <div class="ph-left">
+                        <div class="panel-icon-box pib-amber"><i class="fa-solid fa-person-rays"></i></div>
+                        <span class="panel-head-label">Biometric HUD</span>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="anatomy-view">
+                        <div class="an-overlay-text">
+                            <span>Diagnostic Grid</span>
+                            Real-time pharmacokinetics<br>mapped to internal structures.
+                        </div>
 
-                <!-- EMPTY STATE -->
-                <div class="empty-state" id="emptyState">
-                    <div class="empty-icon"><i class="fa-solid fa-laptop-medical"></i></div>
-                    <h3>AWAITING_SCAN</h3>
-                    <p>Upload a prescription or medication image to begin clinical safety analysis</p>
+                        <svg class="anatomy-svg" viewBox="0 0 100 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Body Silhouette -->
+                            <path class="an-base"
+                                d="M50 10 C50 10 65 10 65 25 C65 40 58 45 58 45 C58 45 78 50 85 80 C90 100 90 130 85 130 C80 130 75 90 70 85 C70 120 70 150 70 150 C70 190 65 230 60 230 C55 230 50 200 50 200 C50 200 45 230 40 230 C35 230 30 190 30 150 C30 150 30 120 30 85 C25 90 20 130 15 130 C10 130 10 100 15 80 C22 50 42 45 42 45 C42 45 35 40 35 25 C35 10 50 10 50 10 Z" />
+                            <g id="organ-brain">
+                                <path class="an-organ" d="M42 22 C42 15 58 15 58 22 C58 32 42 32 42 22 Z" />
+                            </g>
+                            <g id="organ-lungs">
+                                <path class="an-organ" d="M38 55 C35 70 45 80 48 70 C48 60 45 55 38 55 Z" />
+                                <path class="an-organ" d="M62 55 C65 70 55 80 52 70 C52 60 55 55 62 55 Z" />
+                            </g>
+                            <g id="organ-heart">
+                                <path class="an-organ" d="M52 65 C55 65 58 68 55 72 C50 76 48 72 52 65 Z" />
+                            </g>
+                            <g id="organ-liver">
+                                <path class="an-organ" d="M40 85 C40 78 55 75 60 85 C62 95 45 92 40 85 Z" />
+                            </g>
+                            <g id="organ-stomach">
+                                <path class="an-organ" d="M60 90 C55 90 50 95 52 100 C58 105 65 95 60 90 Z" />
+                            </g>
+                            <g id="organ-kidney">
+                                <circle class="an-organ" cx="44" cy="105" r="4" />
+                                <circle class="an-organ" cx="56" cy="105" r="4" />
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COL 3: RESULTS -->
+            <div class="results-area">
+                <div class="empty-state panel" id="emptyState" style="border:none;">
+                    <div class="empty-icon"><i class="fa-solid fa-satellite-dish"></i></div>
+                    <h3>AWAITING TELEMETRY</h3>
+                    <p>Provide target optic feed to initialize clinical safety algorithms.</p>
                 </div>
 
-                <!-- RESULTS (hidden initially) -->
-                <div id="resultBlock" class="hidden">
+                <div id="resultBlock" class="hidden" style="display:flex; flex-direction:column; gap:24px;">
+                    <div id="utilButtons" style="display:flex; justify-content:flex-end; gap:12px; margin-bottom:-10px;">
+                        <button class="util-btn" aria-label="Export Protocol to Google Calendar" onclick="exportICS()"><i class="fa-regular fa-calendar-plus"></i> Export Protocol</button>
+                        <button class="util-btn" aria-label="Print Medical PDF Document" onclick="window.print()"><i class="fa-solid fa-print"></i> Print PDF</button>
+                    </div>
 
-                    <div id="urgencyWrap" style="margin-bottom:4px"></div>
+                    <div id="urgencyWrap" class="anim-slide-up" aria-live="assertive" role="alert" style="animation-delay: 0.1s;"></div>
 
-                    <div class="rsec" id="medsSection">
+                    <div class="rsec anim-slide-up" id="medsSection" style="animation-delay: 0.2s;">
                         <div class="rsec-head">
-                            <div class="panel-icon-box pib-cyan" style="width:24px;height:24px;font-size:11px"><i
-                                    class="fa-solid fa-capsules"></i></div>
-                            <span class="rsec-title">Detected Medications</span>
+                            <div class="panel-icon-box pib-cyan"><i class="fa-solid fa-capsules"></i></div><span
+                                class="rsec-title">Pharmacological Signatures</span>
                         </div>
                         <div class="rsec-body">
-                            <div class="med-grid" id="medsList"></div>
+                            <div id="medsList"></div>
                         </div>
                     </div>
 
-                    <div class="rsec hidden" id="interactionsSection" style="border-color:rgba(255,61,90,0.15)">
-                        <div class="rsec-head" style="background:rgba(255,61,90,0.05);border-color:rgba(255,61,90,0.1)">
-                            <div class="panel-icon-box"
-                                style="background:rgba(255,61,90,0.1);color:var(--red);width:24px;height:24px;font-size:11px">
-                                <i class="fa-solid fa-triangle-exclamation"></i></div>
-                            <span class="rsec-title" style="color:#ff8899">Drug Interactions</span>
+                    <div class="rsec anim-slide-up hidden" id="interactionsSection"
+                        style="border-color:rgba(255,51,85,0.3); animation-delay: 0.3s;">
+                        <div class="rsec-head"
+                            style="background:rgba(255,51,85,0.1); border-color:rgba(255,51,85,0.2);">
+                            <div class="panel-icon-box" style="background:rgba(255,51,85,0.2);color:var(--red);"><i
+                                    class="fa-solid fa-triangle-exclamation"></i></div>
+                            <span class="rsec-title" style="color:#ff8899">Critical System Alters</span>
                         </div>
                         <div class="rsec-body" id="interactionsList"></div>
                     </div>
 
-                    <div class="rsec hidden" id="actionsSection" style="border-color:rgba(0,229,160,0.12)">
-                        <div class="rsec-head" style="background:rgba(0,229,160,0.04);border-color:rgba(0,229,160,0.1)">
-                            <div class="panel-icon-box"
-                                style="background:rgba(0,229,160,0.1);color:var(--green);width:24px;height:24px;font-size:11px">
-                                <i class="fa-solid fa-clipboard-check"></i></div>
-                            <span class="rsec-title" style="color:#6ee7b7">Recommended Actions</span>
+                    <div class="rsec anim-slide-up hidden" id="actionsSection"
+                        style="border-color:rgba(0,242,173,0.3); animation-delay: 0.4s;">
+                        <div class="rsec-head"
+                            style="background:rgba(0,242,173,0.1); border-color:rgba(0,242,173,0.2);">
+                            <div class="panel-icon-box" style="background:rgba(0,242,173,0.2);color:var(--green);"><i
+                                    class="fa-solid fa-clipboard-check"></i></div>
+                            <span class="rsec-title" style="color:#6ee7b7">Recommended Action Protocols</span>
                         </div>
-                        <div class="rsec-body" id="actionsList"></div>
-                    </div>
-
-                    <div class="rsec hidden" id="noteSection">
-                        <div class="rsec-head">
-                            <div class="panel-icon-box"
-                                style="background:rgba(56,200,255,0.1);color:var(--blue);width:24px;height:24px;font-size:11px">
-                                <i class="fa-solid fa-user-doctor"></i></div>
-                            <span class="rsec-title">Pharmacist Note</span>
-                        </div>
-                        <div class="rsec-body">
-                            <div class="dnote" id="noteText"></div>
+                        <div class="rsec-body" id="actionsList" style="display:flex; flex-direction:column; gap:8px;">
                         </div>
                     </div>
 
+                    <!-- CHAT CONSOLE -->
+                    <div class="rsec anim-slide-up hidden" id="chatSection" style="border-color:var(--line-bright); animation-delay: 0.5s; display:flex; flex-direction:column;">
+                        <div class="rsec-head" style="background:rgba(0,212,255,0.05);">
+                            <div class="panel-icon-box pib-cyan"><i class="fa-solid fa-robot"></i></div>
+                            <span class="rsec-title" style="color:var(--g)">AI Clinical Pharmacist Consult</span>
+                        </div>
+                        <div id="chatLog" style="padding:16px; min-height:100px; max-height:250px; overflow-y:auto; display:flex; flex-direction:column; gap:12px; font-size:0.9rem; color:#fff;">
+                            <div style="opacity:0.6; font-style:italic; font-family:var(--mono); text-align:center;">Consultation terminal active. Ask follow-up questions about this scan.</div>
+                        </div>
+                        <div style="padding:16px; border-top:1px solid var(--line-subtle); display:flex; gap:10px;">
+                            <input type="text" id="chatInput" placeholder="Type a question..." style="flex:1; background:rgba(255,255,255,0.05); border:1px solid var(--line-subtle); border-radius:8px; padding:10px; color:#fff; font-family:var(--sans); outline:none;" onkeypress="if(event.key === 'Enter') sendChat()">
+                            <button class="util-btn" onclick="sendChat()" style="background:var(--g-dim); border-color:var(--g); color:var(--g);"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        let b64 = null, mime = null;
+    <!-- HISTORY DRAWER -->
+    <div class="history-drawer" id="historyDrawer">
+        <div class="hd-header">
+            <div class="hd-title"><i class="fa-solid fa-database"></i> Local Archive</div>
+            <i class="fa-solid fa-xmark hd-close" onclick="toggleHistory()"></i>
+        </div>
+        <div class="hd-list" id="historyList"></div>
+    </div>
 
-        // Drag & drop
+    <!-- JAVASCRIPT SYSTEM -->
+    <script>
+        const escapeHTML = (str) => String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+        let b64 = null, mime = null, localStream = null, audioEnabled = true;
+        let currentRecordData = null; // Store current AI JSON for auto exports
+        const synth = window.speechSynthesis;
+
+        // --- HISTORY DB ---
+        function toggleHistory() {
+            const dr = document.getElementById('historyDrawer');
+            dr.classList.toggle('open');
+            if (dr.classList.contains('open')) renderHistoryUI();
+        }
+
+        function saveHistory(data) {
+            const h = JSON.parse(localStorage.getItem('medisafe_history') || '[]');
+            const record = { id: Date.now(), time: new Date().toLocaleString(), data: data };
+            h.unshift(record);
+            if(h.length > 20) h.pop(); // Keep last 20
+            localStorage.setItem('medisafe_history', JSON.stringify(h));
+        }
+
+        function renderHistoryUI() {
+            const list = document.getElementById('historyList');
+            const h = JSON.parse(localStorage.getItem('medisafe_history') || '[]');
+            list.innerHTML = '';
+            if(!h.length) { list.innerHTML = `<span style="color:var(--text-muted); font-size:0.85rem">No telemetry archived locally.</span>`; return; }
+            h.forEach(x => {
+                const uColor = x.data.urgency === 'CRITICAL' ? 'var(--red)' : (x.data.urgency === 'WARNING' ? 'var(--amber)' : 'var(--green)');
+                list.innerHTML += `<div class="h-item" onclick="loadHistoryItem(${x.id})">
+                    <div style="font-family:var(--sans); font-weight:800; color:${uColor}">${x.data.urgency || 'SAFE'}</div>
+                    <div style="color:#fff; font-size:0.9rem">${x.data.medications ? x.data.medications.join(', ') : 'Unknown Signatures'}</div>
+                    <div class="h-date">${x.time}</div>
+                </div>`;
+            });
+        }
+
+        function loadHistoryItem(id) {
+            const h = JSON.parse(localStorage.getItem('medisafe_history') || '[]');
+            const tgt = h.find(i => i.id === id);
+            if(tgt) {
+                render(tgt.data, true);
+                toggleHistory();
+            }
+        }
+
+        // --- GOOGLE CALENDAR & ICS EXPORT (GOOGLE SERVICES) ---
+        function exportICS() {
+            if(!currentRecordData || !currentRecordData.actions || !currentRecordData.actions.length) {
+                alert("No action protocols available to export."); return;
+            }
+            
+            // Trigger Google Services Live Add
+            const txt = encodeURIComponent("MediSafe Protocol Reminder");
+            const details = encodeURIComponent(currentRecordData.actions.map(a => `- ${a}`).join('\n\n'));
+            const gcalUrl = `https://calendar.google.com/calendar/r/eventedit?text=${txt}&details=${details}`;
+            window.open(gcalUrl, '_blank');
+            
+            // Standard ICS fall-back
+            let icsContent = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//MediSafe AI//Clinical Protocol//EN\n";
+            const dtStart = new Date();
+            const dtEnd = new Date(dtStart.getTime() + 60 * 60 * 1000); // 1 hour event
+            
+            const formatDate = (date) => {
+                return date.toISOString().replace(/-|:|\.\d+/g, "").substring(0, 15) + "Z";
+            };
+
+            currentRecordData.actions.forEach((a, i) => {
+                const start = new Date(dtStart.getTime() + (i * 24 * 60 * 60 * 1000)); // Schedule sequentially per day
+                const end = new Date(dtEnd.getTime() + (i * 24 * 60 * 60 * 1000));
+                icsContent += "BEGIN:VEVENT\n";
+                icsContent += `UID:${Date.now()}-${i}@medisafe.local\n`;
+                icsContent += `DTSTAMP:${formatDate(new Date())}\n`;
+                icsContent += `DTSTART:${formatDate(start)}\n`;
+                icsContent += `DTEND:${formatDate(end)}\n`;
+                icsContent += `SUMMARY:MediSafe Protocol Reminder\n`;
+                icsContent += `DESCRIPTION:${a.substring(0, 70)}...\n`;
+                icsContent += "END:VEVENT\n";
+            });
+            icsContent += "END:VCALENDAR";
+            
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'medisafe_protocol.ics';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // --- SPEECH RECOGNITION (VOICE COMMANDS) ---
+        let micEnabled = false;
+        let recognition = null;
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+            
+            recognition.onresult = (event) => {
+                const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase();
+                console.log("Voice Command:", transcript);
+                
+                if (transcript.includes('scan') || transcript.includes('capture')) {
+                    if (document.getElementById('tabCamera').classList.contains('active')) {
+                        captureCamera();
+                    } else if (b64) {
+                        runAnalysis();
+                    }
+                }
+                if (transcript.includes('history') || transcript.includes('archive')) toggleHistory();
+                if (transcript.includes('clear') || transcript.includes('reset') || transcript.includes('dump')) clearImg();
+            };
+            
+            recognition.onend = () => { if(micEnabled) recognition.start(); }; // Keep listening
+        }
+
+        function toggleMic() {
+            if(!recognition) { alert("Voice commands not supported in this browser."); return; }
+            micEnabled = !micEnabled;
+            const btn = document.getElementById('micToggleBtn');
+            if(micEnabled) {
+                btn.style.color = 'var(--red)'; btn.style.borderColor = 'var(--red)';
+                btn.innerHTML = '<i class="fa-solid fa-microphone"></i> LISTENING...';
+                btn.style.animation = 'pulseAlert 1.5s infinite';
+                recognition.start();
+            } else {
+                btn.style.color = ''; btn.style.borderColor = 'var(--g)';
+                btn.innerHTML = '<i class="fa-solid fa-microphone-slash"></i> MIC OFF';
+                btn.style.animation = 'none';
+                recognition.stop();
+            }
+        }
+
+        // --- AUDIO ENGINE ---
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            const btn = document.getElementById('audioToggleBtn');
+            if (audioEnabled) {
+                btn.classList.add('active'); btn.innerHTML = '<i class="fa-solid fa-volume-high"></i> TTS ENABLED';
+            } else {
+                btn.classList.remove('active'); btn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> TTS MUTED'; synth.cancel();
+            }
+        }
+        function speakAlert(reason) {
+            if (!audioEnabled || !synth) return;
+            synth.cancel();
+            const utter = new SpeechSynthesisUtterance("Warning. Critical Network Alert. " + reason);
+            const lang = document.getElementById('langSelect').value;
+            utter.lang = lang === 'Hindi' ? 'hi-IN' : (lang === 'Kannada' ? 'kn-IN' : (lang === 'Tamil' ? 'ta-IN' : (lang === 'Telugu' ? 'te-IN' : 'en-US')));
+            utter.rate = 1.0; utter.pitch = 1.1; synth.speak(utter);
+        }
+
+        // --- AI CONVERSATION ENGINE ---
+        async function sendChat() {
+            const input = document.getElementById('chatInput');
+            const log = document.getElementById('chatLog');
+            const q = input.value.trim();
+            if(!q || !b64) return;
+            
+            input.value = '';
+            log.innerHTML += `<div style="align-self:flex-end; background:var(--g-dim); padding:10px 14px; border-radius:12px 12px 0 12px; border:1px solid var(--g); color:#fff; font-family:var(--sans); max-width:85%;">${q}</div>`;
+            log.scrollTop = log.scrollHeight;
+            
+            const typingId = 'typing-' + Date.now();
+            log.innerHTML += `<div id="${typingId}" style="align-self:flex-start; color:var(--g); font-family:var(--mono); font-size:0.8rem; margin-top:8px;"><i class="fa-solid fa-atom fa-spin"></i> Processing Consult Request...</div>`;
+            log.scrollTop = log.scrollHeight;
+
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        systemInstruction: { parts: [{ text: `You are an expert AI clinical pharmacist. The user provided an image of medical records or pill bottles previously. Answer their follow up question explicitly based on the context of the scanned medical item. YOUR ENTIRE RESPONSE MUST BE IN EXACTLY THIS LANGUAGE: ${document.getElementById('langSelect').value}. Do NOT USE MARKDOWN boldly, keep it raw standard text.` }] },
+                        contents: [
+                            { parts: [{ inlineData: { mimeType: mime, data: b64 } }] },
+                            { parts: [{ text: "Patient Question: " + q }] }
+                        ],
+                        generationConfig: { temperature: 0.3 }
+                    })
+                });
+                const data = await res.json();
+                if (data.error) throw new Error(data.error.message);
+                const ans = data.candidates[0].content.parts[0].text;
+                
+                document.getElementById(typingId).remove();
+                log.innerHTML += `<div style="align-self:flex-start; background:rgba(0,0,0,0.4); padding:10px 14px; border-radius:12px 12px 12px 0; border:1px solid var(--line-bright); color:#d0e7f2; font-family:var(--sans); line-height:1.5; max-width:90%;">${ans}</div>`;
+                log.scrollTop = log.scrollHeight;
+                
+                if(audioEnabled) {
+                    synth.cancel();
+                    const chatUtter = new SpeechSynthesisUtterance(ans);
+                    const slang = document.getElementById('langSelect').value;
+                    chatUtter.lang = slang === 'Hindi' ? 'hi-IN' : (slang === 'Kannada' ? 'kn-IN' : (slang === 'Tamil' ? 'ta-IN' : (slang === 'Telugu' ? 'te-IN' : 'en-US')));
+                    synth.speak(chatUtter);
+                }
+            } catch (e) {
+                document.getElementById(typingId).innerHTML = "<span style='color:red'>Transmission failed. Retrying network link...</span>";
+            }
+        }
+
+        // --- TABS ---
+        function switchTab(t) {
+            document.getElementById('tabUpload').classList.remove('active');
+            document.getElementById('tabCamera').classList.remove('active');
+            document.getElementById('tabBio').classList.remove('active');
+            
+            document.getElementById('uploadZone').style.display = 'none';
+            document.getElementById('cameraZone').style.display = 'none';
+            document.getElementById('bioZone').style.display = 'none';
+            
+            if(t !== 'camera') stopCamera();
+            if(t !== 'bio') stopBio();
+
+            if (t === 'upload') {
+                document.getElementById('tabUpload').classList.add('active');
+                document.getElementById('uploadZone').style.display = 'flex';
+                if (b64) document.getElementById('previewWrap').classList.add('show');
+            } else if (t === 'camera') {
+                document.getElementById('tabCamera').classList.add('active');
+                document.getElementById('cameraZone').style.display = 'flex';
+                document.getElementById('previewWrap').classList.remove('show');
+                startCamera();
+            } else if (t === 'bio') {
+                document.getElementById('tabBio').classList.add('active');
+                document.getElementById('bioZone').style.display = 'flex';
+                document.getElementById('previewWrap').classList.remove('show');
+                startBio();
+            }
+        }
+
+        // --- OPTICS (WEBRTC) ---
+        async function startCamera() {
+            try {
+                const vid = document.getElementById('cameraFeed');
+                const loading = document.getElementById('camLoading');
+                vid.style.display = 'none'; loading.style.display = 'block';
+
+                localStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                vid.srcObject = localStream;
+                vid.onloadedmetadata = () => { vid.style.display = 'block'; loading.style.display = 'none'; };
+            } catch (e) {
+                document.getElementById('camLoading').innerHTML = "<span style='color:red'>ERR: OPTICS OFFLINE</span>";
+            }
+        }
+        function stopCamera() { if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; } }
+        function captureCamera() {
+            if (!localStream) return;
+            const vid = document.getElementById('cameraFeed'); const can = document.getElementById('cameraCanvas');
+            can.width = vid.videoWidth; can.height = vid.videoHeight;
+            can.getContext('2d').drawImage(vid, 0, 0);
+            b64 = can.toDataURL('image/jpeg', 0.8).split(',')[1]; mime = 'image/jpeg';
+            document.getElementById('previewImg').src = can.toDataURL('image/jpeg', 0.8);
+            document.getElementById('previewTag').textContent = 'OPTICAL FEED';
+            // Init
+            switchTab('upload');
+            document.getElementById('uploadZone').style.display = 'none';
+            document.getElementById('previewWrap').classList.add('show');
+            stopCamera(); validate();
+        }
+
+        // --- FILE UPLOAD ---
         const zone = document.getElementById('uploadZone');
         zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover') });
         zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
-        zone.addEventListener('drop', e => {
-            e.preventDefault(); zone.classList.remove('dragover');
-            const f = e.dataTransfer.files[0];
-            if (f && f.type.startsWith('image/')) loadFile(f);
-        });
-
+        zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f) loadFile(f); });
         function handleFile(e) { const f = e.target.files[0]; if (f) loadFile(f); }
-
         function loadFile(file) {
             mime = file.type;
             const r = new FileReader();
@@ -1235,123 +1782,350 @@
                 document.getElementById('uploadZone').style.display = 'none';
                 document.getElementById('previewWrap').classList.add('show');
                 validate();
-            };
-            r.readAsDataURL(file);
+            }; r.readAsDataURL(file);
         }
 
         function clearImg() {
             b64 = null; mime = null;
-            document.getElementById('previewImg').src = '';
-            document.getElementById('fileInput').value = '';
+            document.getElementById('previewImg').src = ''; document.getElementById('fileInput').value = '';
             document.getElementById('previewWrap').classList.remove('show');
             document.getElementById('uploadZone').style.display = 'flex';
-            validate();
+            validate(); resetAnatomy(); document.getElementById('resultBlock').classList.add('hidden'); document.getElementById('emptyState').classList.remove('hidden');
         }
+
+        // --- HARDCODED CONTENT ENGINE ---
+        // Insert key below to allow seamless user adoption without a vault modal
+        const GEMINI_API_KEY = "AIzaSyBhIG711YiNvM2m3D-PC1atIKImmXTwPDw";
 
         function validate() {
-            const key = document.getElementById('apiKey').value.trim();
-            document.getElementById('scanBtn').disabled = !(key && b64);
+            if (b64) runAnalysis();
         }
 
-        document.getElementById('apiKey').addEventListener('input', validate);
+        // --- ANATOMY UPDATES ---
+        function resetAnatomy() { document.querySelectorAll('.an-organ').forEach(el => el.classList.remove('danger')); }
+        function updateAnatomy(arr) {
+            resetAnatomy();
+            if (!arr || !arr.length) return;
+            arr.forEach(o => {
+                const el = document.getElementById(`organ-${o.toLowerCase()}`);
+                if (el) { const p = el.querySelectorAll('.an-organ'); if (p.length) p.forEach(x => x.classList.add('danger')); else el.classList.add('danger'); }
+            });
+        }
 
+        // --- GEMINI CORE ---
         async function runAnalysis() {
-            const key = document.getElementById('apiKey').value.trim();
-            if (!key || !b64) return;
+            if (!b64) return;
 
-            // Show overlay
+            if (GEMINI_API_KEY === "YOUR_API_KEY_HERE" || !GEMINI_API_KEY) {
+                alert("Please add your Gemini API Key directly to the HTML code (Search for 'GEMINI_API_KEY') to enable the Auto-Scanner.");
+                return;
+            }
+
             document.getElementById('scanOverlay').classList.add('show');
-            document.getElementById('scanBtn').disabled = true;
-            document.getElementById('btnIcon').style.display = 'none';
-            document.getElementById('btnLabel').textContent = 'SCANNING…';
-            document.getElementById('scanSpinner').style.display = 'block';
+            document.getElementById('interactionsSection').classList.remove('hidden');
+            document.getElementById('actionsSection').classList.remove('hidden');
+            document.getElementById('chatSection').classList.remove('hidden');
+            document.getElementById('chatLog').innerHTML = '<div style="opacity:0.6; font-style:italic; font-family:var(--mono); text-align:center;">Consultation terminal active. Ask follow-up questions about this scan.</div>';
             document.getElementById('emptyState').classList.add('hidden');
             document.getElementById('resultBlock').classList.add('hidden');
+            synth.cancel(); resetAnatomy();
+
+            // Reset CSS animation classes so they replay
+            document.querySelectorAll('.anim-slide-up').forEach(el => { el.style.animation = 'none'; el.offsetHeight; el.style.animation = null; });
 
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        systemInstruction: { parts: [{ text: 'You are a clinical pharmacist AI. Analyze medication images and detect drug interactions. Return JSON ONLY (no markdown) with: urgency (CRITICAL/WARNING/SAFE), urgency_reason, medications[], interactions[{drugs,risk}], actions[], doctor_note' }] },
+                        systemInstruction: { parts: [{ text: `You are an advanced clinical AI. Analyze objects in the image. Return strict JSON. Properties: urgency (CRITICAL/WARNING/SAFE), urgency_reason, medications (array of objects {name: "drug string", box: [ymin, xmin, ymax, xmax]}), interactions (array of objects {drugs, risk}), actions (array of strings), affected_organs (array of strings exactly matching these values ONLY IN ENGLISH: liver, heart, brain, kidney, stomach, lungs). The 'box' array MUST be 4 coordinates mapped 0-1000 of the spatial location of the detected drug brand/pill in the image. CRITICAL INSTRUCTION: You MUST translate urgency_reason, medications.name, interactions.risk, and actions into the exact language: ${document.getElementById('langSelect').value}.` }] },
                         contents: [{ parts: [{ inlineData: { mimeType: mime, data: b64 } }] }],
                         generationConfig: { responseMimeType: 'application/json', temperature: 0.1 }
                     })
                 });
                 const data = await res.json();
                 if (data.error) throw new Error(data.error.message);
-                const text = data.candidates[0].content.parts[0].text;
-                render(JSON.parse(text));
+
+                render(JSON.parse(data.candidates[0].content.parts[0].text));
             } catch (e) {
                 document.getElementById('emptyState').classList.remove('hidden');
-                document.getElementById('emptyState').innerHTML = `<div class="empty-icon"><i class="fa-solid fa-circle-xmark" style="color:var(--red)"></i></div><h3 style="color:var(--red)">ERROR</h3><p style="color:rgba(255,100,120,0.7)">${e.message}</p>`;
+                document.getElementById('emptyState').innerHTML = `<div class="empty-icon" style="color:var(--red); border-color:var(--red)"><i class="fa-solid fa-skull"></i></div><h3 style="color:var(--red)">MATRIX LINK FAILED</h3><p style="color:rgba(255,100,120,0.7)">${e.message}</p>`;
             } finally {
                 document.getElementById('scanOverlay').classList.remove('show');
-                document.getElementById('scanBtn').disabled = false;
-                document.getElementById('btnIcon').style.display = 'inline';
-                document.getElementById('btnLabel').textContent = 'INITIATE SCAN';
-                document.getElementById('scanSpinner').style.display = 'none';
-                validate();
             }
         }
 
-        function render(d) {
-            const urgency = (d.urgency || 'SAFE').toUpperCase();
-            const icons = { CRITICAL: 'fa-triangle-exclamation', WARNING: 'fa-circle-exclamation', SAFE: 'fa-shield-halved' };
+        function render(d, isHistoryLoad = false) {
+            currentRecordData = d;
+            if(!isHistoryLoad) saveHistory(d);
+
+            const u = (d.urgency || 'SAFE').toUpperCase();
+            if (u === 'CRITICAL') speakAlert(d.urgency_reason || "Check results immediately.");
 
             // Urgency
-            document.getElementById('urgencyWrap').innerHTML = `
-    <div class="urgency-banner ub-${urgency}" style="margin-bottom:16px">
-      <div class="ub-icon-box"><i class="fa-solid ${icons[urgency] || icons.SAFE}"></i></div>
-      <div class="ub-content">
-        <div class="ub-level">${urgency}</div>
-        <div class="ub-reason">${d.urgency_reason || 'No critical concerns found.'}</div>
-      </div>
-    </div>`;
+            const icons = { CRITICAL: 'fa-triangle-exclamation', WARNING: 'fa-radiation', SAFE: 'fa-shield-halved' };
+            
+            // Trigger Apex Web Audio Synth
+            playDiagnosisSynth(u);
 
-            // Meds
-            const ml = document.getElementById('medsList');
-            ml.innerHTML = '';
-            (d.medications || []).forEach(m => {
-                ml.innerHTML += `<div class="med-tag"><i class="fa-solid fa-pills"></i>${m}</div>`;
-            });
-            if (!ml.innerHTML) ml.innerHTML = '<span style="color:var(--muted);font-size:0.85rem">No medications identified.</span>';
+            document.getElementById('urgencyWrap').innerHTML = `
+                <div class="urgency-banner ub-${u}">
+                <div class="ub-icon-box"><i class="fa-solid ${icons[u] || icons.SAFE}"></i></div>
+                <div class="ub-content">
+                    <div class="ub-level">${u}</div>
+                    <div class="ub-reason">${escapeHTML(d.urgency_reason || 'No structural anomalies detected.')}</div>
+                    <div id="erRouteWrapper"></div>
+                </div></div>`;
+            
+            if(u === 'CRITICAL') {
+                if("geolocation" in navigator) {
+                    navigator.geolocation.getCurrentPosition(pos => {
+                        const lat = pos.coords.latitude; const lon = pos.coords.longitude;
+                        document.getElementById('erRouteWrapper').innerHTML = `<a href="https://www.google.com/maps/search/emergency+hospital+near+me/@${lat},${lon},13z" target="_blank" class="er-btn"><i class="fa-solid fa-truck-medical"></i> ROUTE TO NEAREST ER</a>`;
+                    }, err => {
+                        document.getElementById('erRouteWrapper').innerHTML = `<a href="https://www.google.com/maps/search/emergency+hospital" target="_blank" class="er-btn"><i class="fa-solid fa-truck-medical"></i> FIND NEAREST ER</a>`;
+                    });
+                } else {
+                    document.getElementById('erRouteWrapper').innerHTML = `<a href="https://www.google.com/maps/search/emergency+hospital" target="_blank" class="er-btn"><i class="fa-solid fa-truck-medical"></i> FIND NEAREST ER</a>`;
+                }
+            }
+
+            // Meds & HTML5 AR Bounding Boxes
+            const ml = document.getElementById('medsList'); ml.innerHTML = '';
+            
+            const arCanvas = document.getElementById('arCanvas');
+            const ctx = arCanvas.getContext('2d');
+            const imgEl = document.getElementById('previewImg');
+            
+            // Render UI Med Tags
+            if (d.medications && d.medications.length) {
+                setTimeout(() => {
+                    arCanvas.width = imgEl.clientWidth; arCanvas.height = imgEl.clientHeight;
+                    ctx.clearRect(0,0,arCanvas.width,arCanvas.height);
+                    
+                    const imgAspect = imgEl.naturalWidth / imgEl.naturalHeight;
+                    const canvasAspect = arCanvas.width / arCanvas.height;
+                    let drawWidth = arCanvas.width, drawHeight = arCanvas.height, offsetX = 0, offsetY = 0;
+                    
+                    if(imgAspect > canvasAspect) { drawHeight = arCanvas.width / imgAspect; offsetY = (arCanvas.height - drawHeight) / 2; } 
+                    else { drawWidth = arCanvas.height * imgAspect; offsetX = (arCanvas.width - drawWidth) / 2; }
+
+                    ctx.strokeStyle = '#00ffcc'; ctx.lineWidth = 4; ctx.shadowColor = '#00ffcc'; ctx.shadowBlur = 15; ctx.fillStyle = 'rgba(0, 255, 204, 0.15)';
+                    
+                    d.medications.forEach(m => {
+                        const mName = (typeof m === 'string') ? m : m.name;
+                        ml.innerHTML += `<div class="med-tag"><i class="fa-solid fa-pills"></i> ${mName}</div>`;
+                        
+                        if(typeof m === 'object' && m.box && m.box.length === 4 && imgEl.naturalWidth > 0) {
+                            const [ymin, xmin, ymax, xmax] = m.box;
+                            const y = offsetY + ((ymin / 1000) * drawHeight);
+                            const x = offsetX + ((xmin / 1000) * drawWidth);
+                            const h = ((ymax - ymin) / 1000) * drawHeight;
+                            const w = ((xmax - xmin) / 1000) * drawWidth;
+                            ctx.beginPath(); ctx.rect(x, y, w, h); ctx.stroke(); ctx.fill();
+                            // Optional: Text label over box
+                            ctx.fillStyle = '#00ffcc'; ctx.font = 'bold 14px "JetBrains Mono"';
+                            ctx.fillText(mName.substring(0,10), x, y - 5); ctx.fillStyle = 'rgba(0, 255, 204, 0.15)';
+                        }
+                    });
+                }, 100);
+            } else { ml.innerHTML = '<span style="color:var(--text-muted); font-size:0.9rem">No pharmacological matches.</span>'; }
 
             // Interactions
-            const il = document.getElementById('interactionsList');
-            il.innerHTML = '';
+            const il = document.getElementById('interactionsList'); il.innerHTML = '';
             if (d.interactions && d.interactions.length) {
                 document.getElementById('interactionsSection').classList.remove('hidden');
-                d.interactions.forEach(i => {
-                    il.innerHTML += `<div class="icard"><div class="icard-drugs"><i class="fa-solid fa-bolt"></i>${i.drugs || 'Interaction'}</div><div class="icard-risk">${i.risk || ''}</div></div>`;
-                });
-            } else {
-                document.getElementById('interactionsSection').classList.add('hidden');
-            }
+                d.interactions.forEach(i => { il.innerHTML += `<div class="icard"><div class="icard-drugs"><i class="fa-solid fa-bolt"></i>${i.drugs || ''}</div><div class="icard-risk">${i.risk || ''}</div></div>`; });
+            } else document.getElementById('interactionsSection').classList.add('hidden');
 
             // Actions
-            const al = document.getElementById('actionsList');
-            al.innerHTML = '';
+            const al = document.getElementById('actionsList'); al.innerHTML = '';
             if (d.actions && d.actions.length) {
                 document.getElementById('actionsSection').classList.remove('hidden');
-                d.actions.forEach((a, i) => {
-                    al.innerHTML += `<div class="acard"><div class="acard-num">${String(i + 1).padStart(2, '0')}</div><p>${a}</p></div>`;
-                });
-            } else {
-                document.getElementById('actionsSection').classList.add('hidden');
-            }
+                d.actions.forEach((a, k) => { al.innerHTML += `<div class="acard"><div class="acard-num">${String(k + 1).padStart(2, '0')}</div><p>${a}</p></div>`; });
+            } else document.getElementById('actionsSection').classList.add('hidden');
 
-            // Note
-            if (d.doctor_note) {
-                document.getElementById('noteSection').classList.remove('hidden');
-                document.getElementById('noteText').innerHTML = d.doctor_note.replace(/\n/g, '<br>');
-            } else {
-                document.getElementById('noteSection').classList.add('hidden');
-            }
-
+            updateAnatomy(d.affected_organs || []);
             document.getElementById('resultBlock').classList.remove('hidden');
         }
+
+        // --- PROJECT APEX: PROCEDURAL WEB AUDIO SYNTH ---
+        let audioCtx = null;
+        let activeSynths = [];
+        
+        function initAudioEngine() {
+            if(!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+        }
+
+        function stopSynth() {
+            if(audioCtx) {
+                activeSynths.forEach(s => { s.osc.stop(); s.osc.disconnect(); s.gain.disconnect(); });
+                activeSynths = [];
+            }
+        }
+
+        function playDiagnosisSynth(urgency) {
+            if(!audioEnabled) return;
+            initAudioEngine();
+            stopSynth();
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+
+            const gainNode = audioCtx.createGain();
+            const filter = audioCtx.createBiquadFilter();
+            filter.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            gainNode.gain.setValueAtTime(0.01, audioCtx.currentTime); 
+            gainNode.gain.exponentialRampToValueAtTime(0.15, audioCtx.currentTime + 1);
+
+            if(urgency === 'CRITICAL') {
+                filter.type = 'lowpass'; filter.frequency.value = 800;
+                const osc1 = audioCtx.createOscillator(); osc1.type = 'sawtooth'; osc1.frequency.value = 150;
+                const osc2 = audioCtx.createOscillator(); osc2.type = 'sawtooth'; osc2.frequency.value = 155;
+                const osc3 = audioCtx.createOscillator(); osc3.type = 'square'; osc3.frequency.value = 75;
+                [osc1, osc2, osc3].forEach(o => { o.connect(filter); o.start(); activeSynths.push({osc: o, gain: gainNode}); });
+                
+                const lfo = audioCtx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 2; // 2Hz pulse
+                const lfoGain = audioCtx.createGain(); lfoGain.gain.value = 400;
+                lfo.connect(lfoGain); lfoGain.connect(filter.frequency);
+                lfo.start(); activeSynths.push({osc: lfo, gain: gainNode}); 
+            } else if(urgency === 'WARNING') {
+                filter.type = 'bandpass'; filter.frequency.value = 400; filter.Q.value = 5;
+                const osc1 = audioCtx.createOscillator(); osc1.type = 'triangle'; osc1.frequency.value = 200;
+                osc1.connect(filter); osc1.start(); activeSynths.push({osc: osc1, gain: gainNode});
+            } else {
+                filter.type = 'lowpass'; filter.frequency.value = 300;
+                const osc1 = audioCtx.createOscillator(); osc1.type = 'sine'; osc1.frequency.value = 110; 
+                const osc2 = audioCtx.createOscillator(); osc2.type = 'sine'; osc2.frequency.value = 164.81; 
+                [osc1, osc2].forEach(o => { o.connect(filter); o.start(); activeSynths.push({osc: o, gain: gainNode}); });
+            }
+        }
+
+        // --- PROJECT APEX: OPTICAL BIOMETRICS (rPPG) ---
+        let bioStream = null, bioAnimFrame = null;
+        let signalData = [];
+        
+        async function startBio() {
+            try {
+                const vid = document.getElementById('bioFeed');
+                bioStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+                vid.srcObject = bioStream;
+                vid.onloadedmetadata = () => { 
+                    vid.style.display = 'block'; 
+                    document.getElementById('bioLoading').style.display = 'none'; 
+                    signalData = [];
+                    processBioFrame();
+                };
+            } catch(e) { document.getElementById('bioLoading').innerHTML = "<span style='color:red'>ERR: SENSOR OFFLINE</span>"; }
+        }
+
+        function stopBio() {
+            if(bioStream) { bioStream.getTracks().forEach(t => t.stop()); bioStream = null; }
+            if(bioAnimFrame) cancelAnimationFrame(bioAnimFrame);
+            document.getElementById('bioFeed').style.display = 'none';
+            document.getElementById('bioBpmDisplay').innerText = "-- BPM";
+        }
+
+        function processBioFrame() {
+            if(!bioStream) return;
+            const vid = document.getElementById('bioFeed');
+            const hiddenCan = document.getElementById('bioHiddenCanvas');
+            const hCtx = hiddenCan.getContext('2d', { willReadFrequently: true });
+            
+            hiddenCan.width = vid.videoWidth; hiddenCan.height = vid.videoHeight;
+            if(vid.videoWidth === 0) { bioAnimFrame = requestAnimationFrame(processBioFrame); return; }
+            
+            hCtx.drawImage(vid, 0, 0, hiddenCan.width, hiddenCan.height);
+            
+            const boxSize = 100;
+            const cx = (hiddenCan.width / 2) - (boxSize / 2);
+            const cy = (hiddenCan.height / 2) - (boxSize / 2);
+            const frame = hCtx.getImageData(cx, cy, boxSize, boxSize);
+            const data = frame.data;
+            
+            let gSum = 0;
+            for(let i=0; i<data.length; i+=4) { gSum += data[i+1]; }
+            const gAvg = gSum / (boxSize * boxSize);
+            
+            signalData.push(gAvg);
+            if(signalData.length > 300) signalData.shift(); 
+            
+            drawBioGraph();
+            calculateBPM();
+            bioAnimFrame = requestAnimationFrame(processBioFrame);
+        }
+
+        function drawBioGraph() {
+            const graphCan = document.getElementById('bioGraph');
+            const gCtx = graphCan.getContext('2d');
+            gCtx.clearRect(0,0, graphCan.width, graphCan.height);
+            
+            if(signalData.length < 2) return;
+            
+            const min = Math.min(...signalData) || 0;
+            const max = Math.max(...signalData) || 1;
+            const range = (max - min) || 1;
+            
+            gCtx.beginPath(); gCtx.strokeStyle = 'var(--amber)'; gCtx.lineWidth = 2;
+            gCtx.shadowColor = 'var(--amber)'; gCtx.shadowBlur = 10;
+            
+            const step = graphCan.width / 300;
+            for(let i=0; i<signalData.length; i++) {
+                const norm = (signalData[i] - min) / range;
+                const x = i * step;
+                const y = graphCan.height - (norm * graphCan.height * 0.8) - (graphCan.height * 0.1);
+                if(i===0) gCtx.moveTo(x, y); else gCtx.lineTo(x, y);
+            }
+            gCtx.stroke();
+        }
+
+        function calculateBPM() {
+            if(signalData.length < 150) return; 
+            
+            const smoothed = [];
+            for(let i=2; i<signalData.length-2; i++) {
+                smoothed.push((signalData[i-2] + signalData[i-1] + signalData[i] + signalData[i+1] + signalData[i+2])/5);
+            }
+            
+            const mean = smoothed.reduce((a,b)=>a+b,0)/smoothed.length;
+            let peaks = 0;
+            let ascending = false;
+            
+            for(let i=1; i<smoothed.length; i++) {
+                if(smoothed[i] > mean && smoothed[i-1] <= mean) ascending = true;
+                if(ascending && smoothed[i] < smoothed[i-1]) {
+                    peaks++;
+                    ascending = false;
+                }
+            }
+            
+            const secondsInBuffer = signalData.length / 30; 
+            let bpm = Math.round((peaks / secondsInBuffer) * 60);
+            
+            if(bpm > 40 && bpm < 160) {
+                document.getElementById('bioBpmDisplay').innerText = bpm + " BPM";
+            }
+        }
+        
+        // --- DIAGNOSTIC TESTING SUITE (TESTING) ---
+        window.runDiagnosticTests = () => {
+            console.log("[TEST] Initiating mock response...");
+            const mockData = {
+                urgency: "CRITICAL", urgency_reason: "Simulated test analysis: Parallax and Boxes rendering properly.",
+                medications: [ { name: "MockPill 500mg", box: [100, 100, 400, 400] } ],
+                interactions: [{ drugs: "MockPill", risk: "Simulated Overdose Risk" }],
+                actions: ["Validate UI rendering", "Check audio tone"], affected_organs: ["brain"]
+            };
+            const c = document.createElement('canvas'); c.width = 1000; c.height = 1000;
+            b64 = "MOCK"; document.getElementById('previewImg').src = c.toDataURL();
+            document.getElementById('previewWrap').classList.add('show');
+            document.getElementById('uploadZone').style.display = 'none';
+            render(mockData, false);
+        };
+        
+        // Init
+        switchTab('upload');
     </script>
 </body>
-
 </html>
